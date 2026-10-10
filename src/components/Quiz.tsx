@@ -14,11 +14,10 @@ type QuizProps = {
   onFinish: (finalProgress: number, totalQuestions: number) => void;
 };
 
-// Temps de blocage en secondes (30 min = 1800s ; 1 min pour tester)
+// Temps de blocage en secondes (30 min = 1800s ; 60s pour tester)
 const BLOCK_DURATION = 60;
 
 export default function Quiz({ module, onFinish }: QuizProps) {
-  // ------- ÉTAT -------
   const allQuestions = getQuestionsByModule(module.id);
   const [queue, setQueue] = useState<Question[]>(allQuestions);
   const [current, setCurrent] = useState<Question | null>(
@@ -37,37 +36,42 @@ export default function Quiz({ module, onFinish }: QuizProps) {
 
   // ------- GESTION DU BLOCAGE -------
   useEffect(() => {
-    if (progress <= 0 && !blockedUntil) {
-      const until = Date.now() + BLOCK_DURATION * 1000;
-      setBlockedUntil(until);
+    if (progress <= 0 && blockedUntil === null) {
+      setBlockedUntil(Date.now() + BLOCK_DURATION * 1000);
     }
   }, [progress, blockedUntil]);
 
   useEffect(() => {
-    if (!blockedUntil) return;
+    if (blockedUntil === null) return;
+
     const interval = setInterval(() => {
-      const remaining = Math.max(0, blockedUntil - Date.now());
-      setBlockTimer(Math.ceil(remaining / 1000));
+      const remaining = blockedUntil - Date.now();
       if (remaining <= 0) {
+        clearInterval(interval);
         setBlockedUntil(null);
+        setBlockTimer(0);
         setProgress(10);
-        setCurrent(allQuestions[0]);
         setQueue(allQuestions);
+        setCurrent(allQuestions[0] ?? null);
         setWrongQuestions([]);
+        setFeedback(null);
+        setUserInput("");
+      } else {
+        setBlockTimer(Math.ceil(remaining / 1000));
       }
     }, 1000);
-    return () => clearInterval(interval);
-  }, [blockedUntil, allQuestions]);
 
-  // ------- VALIDER UNE RÉPONSE -------
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [blockedUntil]);
+
+  // ------- VALIDER -------
   function handleValidate() {
     if (!current || feedback) return;
     const correct = isAnswerCorrect(current, userInput);
 
-    // Barre verte : +10 bonne, -5 mauvaise
     setProgress((p) => Math.max(0, Math.min(100, correct ? p + 10 : p - 5)));
 
-    // Feedback
     setFeedback({
       correct,
       explanation: current.explanation,
@@ -76,7 +80,6 @@ export default function Quiz({ module, onFinish }: QuizProps) {
         : "Presque ! Recommence, tu es proche 💪",
     });
 
-    // Question ratée → stockée pour revenir
     if (!correct) {
       setWrongQuestions((prev) => [...prev, current]);
     }
@@ -87,17 +90,14 @@ export default function Quiz({ module, onFinish }: QuizProps) {
     setFeedback(null);
     setUserInput("");
 
-    // 1. Retirer la question actuelle de la file
     const rest = queue.filter((q) => q.id !== current?.id);
 
-    // 2. S'il reste des questions → suivante
     if (rest.length > 0) {
       setQueue(rest);
       setCurrent(rest[0]);
       return;
     }
 
-    // 3. Plus de questions, mais des ratées → on les rejoue (reformulées)
     if (wrongQuestions.length > 0) {
       setQueue(wrongQuestions);
       setCurrent(wrongQuestions[0]);
@@ -105,7 +105,6 @@ export default function Quiz({ module, onFinish }: QuizProps) {
       return;
     }
 
-    // 4. Terminé !
     onFinish(progress, allQuestions.length);
   }
 
@@ -118,7 +117,6 @@ export default function Quiz({ module, onFinish }: QuizProps) {
     );
   }
 
-  // Écran de blocage
   if (blockedUntil) {
     const min = Math.floor(blockTimer / 60);
     const sec = blockTimer % 60;
@@ -144,10 +142,8 @@ export default function Quiz({ module, onFinish }: QuizProps) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-8">
       <div className="max-w-2xl w-full">
-        {/* Barre d'énergie */}
         <ProgressBar value={progress} />
 
-        {/* Progression question */}
         <div className="flex justify-between items-center mt-4 mb-6 text-xs text-slate-500">
           <span>
             {module.emoji} {module.name}
@@ -157,7 +153,6 @@ export default function Quiz({ module, onFinish }: QuizProps) {
           </span>
         </div>
 
-        {/* Question */}
         <AnimatePresence mode="wait">
           <motion.div
             key={current.id}
@@ -275,7 +270,14 @@ export default function Quiz({ module, onFinish }: QuizProps) {
               <motion.button
                 onClick={handleValidate}
                 disabled={!userInput.trim()}
-                whileHover={userInput.trim() ? { scale: 1.03 } : {}}
+                whileHover={
+                  userInput.trim()
+                    ? {
+                        scale: 1.03,
+                        boxShadow: "0 0 25px rgba(34, 211, 238, 0.7)",
+                      }
+                    : {}
+                }
                 whileTap={userInput.trim() ? { scale: 0.97 } : {}}
                 className={`mt-6 w-full py-3 rounded-lg font-bold transition-all cursor-pointer ${
                   userInput.trim()
@@ -288,7 +290,10 @@ export default function Quiz({ module, onFinish }: QuizProps) {
             ) : (
               <motion.button
                 onClick={handleNext}
-                whileHover={{ scale: 1.03 }}
+                whileHover={{
+                  scale: 1.03,
+                  boxShadow: "0 0 25px rgba(34, 211, 238, 0.7)",
+                }}
                 whileTap={{ scale: 0.97 }}
                 className="mt-6 w-full py-3 rounded-lg font-bold bg-gradient-to-r from-cyan-500 to-green-500 text-white cursor-pointer"
               >
