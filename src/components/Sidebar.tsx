@@ -22,7 +22,7 @@ export default function Sidebar({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Overlay cliquable pour fermer */}
+          {/* Overlay sombre cliquable */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -36,49 +36,91 @@ export default function Sidebar({
             initial={{ x: "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 left-0 h-screen w-1/2 bg-slate-900/80 backdrop-blur-xl border-r border-slate-700 z-50 p-4 overflow-y-auto"
+            transition={{ type: "spring", damping: 28, stiffness: 220 }}
+            className="fixed top-0 left-0 h-screen w-1/2 bg-slate-900/85 backdrop-blur-xl border-r border-slate-700 z-50 p-4 overflow-y-auto"
           >
+            {/* En-tête */}
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">
                 DevOps Quiz
               </h1>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.15, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ type: "spring", stiffness: 400 }}
                 onClick={onClose}
-                className="text-slate-400 hover:text-white text-xl"
+                className="text-slate-400 hover:text-white text-xl cursor-pointer w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-800"
               >
                 ✕
-              </button>
+              </motion.button>
             </div>
 
-            <button
+            {/* Bouton PARTIE 1 */}
+            <motion.button
+              whileTap={{ scale: 0.97 }}
               onClick={() => setPartieOuverte(!partieOuverte)}
-              className="w-full flex justify-between items-center px-3 py-2 rounded-lg bg-slate-800/60 text-left text-sm font-semibold text-cyan-300 hover:bg-slate-800 mb-2"
+              className="w-full flex justify-between items-center px-3 py-2 rounded-lg bg-slate-800/60 text-left text-sm font-semibold text-cyan-300 hover:bg-slate-800 mb-2 cursor-pointer"
             >
               <span>📘 PARTIE 1 — Bases</span>
-              <span>{partieOuverte ? "▾" : "▸"}</span>
-            </button>
+              <motion.span
+                animate={{ rotate: partieOuverte ? 0 : -90 }}
+                transition={{ duration: 0.2 }}
+              >
+                ▾
+              </motion.span>
+            </motion.button>
 
-            {partieOuverte && (
-              <ul className="space-y-1 ml-2">
-                {modules.map((m) => (
-                  <li key={m.id}>
-                    <button
-                      onClick={() => onSelectModule(m)}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition ${
-                        selectedModuleId === m.id
-                          ? "bg-gradient-to-r from-cyan-500/30 to-green-500/30 text-white"
-                          : "text-slate-300 hover:bg-slate-800/60"
-                      }`}
-                    >
-                      <span className="mr-2">{m.emoji}</span>
-                      {m.name}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
+            {/* Liste des modules */}
+            <AnimatePresence initial={false}>
+              {partieOuverte && (
+                <motion.ul
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="space-y-1 ml-2 overflow-hidden"
+                >
+                  {modules.map((m, index) => {
+                    const isSelected = selectedModuleId === m.id;
+                    return (
+                      <motion.li
+                        key={m.id}
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: index * 0.06 }}
+                      >
+                        <motion.button
+                          whileHover={{ x: 4 }}
+                          whileTap={{ scale: 0.97 }}
+                          onClick={() => onSelectModule(m)}
+                          className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all cursor-pointer flex items-center justify-between ${
+                            isSelected
+                              ? "bg-gradient-to-r from-cyan-500/30 to-green-500/30 text-white border-l-4 border-cyan-400 pl-2"
+                              : "text-slate-300 hover:bg-slate-800/60 border-l-4 border-transparent"
+                          }`}
+                        >
+                          <span>
+                            <span className="mr-2">{m.emoji}</span>
+                            {m.name}
+                          </span>
+                          {isSelected && (
+                            <motion.span
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="text-cyan-400 text-xs"
+                            >
+                              ●
+                            </motion.span>
+                          )}
+                        </motion.button>
+                      </motion.li>
+                    );
+                  })}
+                </motion.ul>
+              )}
+            </AnimatePresence>
 
+            {/* Pied */}
             <div className="mt-8 pt-4 border-t border-slate-800 text-xs text-slate-500">
               🚧 D'autres parties arrivent bientôt…
             </div>

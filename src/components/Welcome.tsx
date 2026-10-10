@@ -1,4 +1,5 @@
 "use client";
+import { motion } from "framer-motion";
 
 type WelcomeProps = {
   onStart: () => void;
@@ -44,12 +45,15 @@ export default function Welcome({ onStart }: WelcomeProps) {
           </p>
         </div>
 
-        <button
+        <motion.button
           onClick={onStart}
-          className="px-8 py-4 rounded-xl font-bold text-lg text-white bg-gradient-to-r from-cyan-500 to-green-500 hover:from-cyan-400 hover:to-green-400 shadow-lg shadow-cyan-500/20 transition-all hover:scale-105"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          className="px-8 py-4 rounded-xl font-bold text-lg text-white bg-gradient-to-r from-cyan-500 to-green-500 shadow-lg shadow-cyan-500/30 cursor-pointer"
         >
           Commençons ! 🚀
-        </button>
+        </motion.button>
       </div>
     </div>
   );
