@@ -119,9 +119,10 @@ src/
 
 [Devy Fotsing Ndigue]
 
-· 🐙 GitHub : 
-· 💼 LinkedIn : 
+· 🐙 GitHub : https://github.com/fotsingndiguedevy-dev
+· 💼 LinkedIn : https://cm.linkedin.com/in/devy-fotsing-a3859b330
 
 ---
 
 « Petit à petit, l'oiseau fait son nid » 🐦
+
