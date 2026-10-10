@@ -3,6 +3,7 @@ import { useState } from "react";
 import Welcome from "@/components/Welcome";
 import Sidebar from "@/components/Sidebar";
 import ModuleView from "@/components/ModuleView";
+import Quiz from "@/components/Quiz";
 import { Module } from "@/data/modules";
 
 export default function Home() {
@@ -16,6 +17,11 @@ export default function Home() {
     setQuizStarted(false);
   }
 
+  function handleFinishQuiz() {
+    setQuizStarted(false);
+    setSelectedModule(null);
+  }
+
   return (
     <main className="min-h-screen bg-slate-900 text-white">
       <Sidebar
@@ -25,7 +31,9 @@ export default function Home() {
         selectedModuleId={selectedModule?.id}
       />
 
-      {selectedModule ? (
+      {quizStarted && selectedModule ? (
+        <Quiz module={selectedModule} onFinish={handleFinishQuiz} />
+      ) : selectedModule ? (
         <ModuleView
           module={selectedModule}
           onStart={() => setQuizStarted(true)}
@@ -36,12 +44,6 @@ export default function Home() {
         />
       ) : (
         <Welcome onStart={() => setSidebarOpen(true)} />
-      )}
-
-      {quizStarted && (
-        <div className="fixed bottom-4 right-4 bg-slate-800 border border-cyan-500/50 text-sm px-4 py-2 rounded-lg shadow-lg">
-          🚧 Quiz en construction — prochaine étape !
-        </div>
       )}
     </main>
   );
