@@ -8,6 +8,7 @@ import {
   getQuestionsByModule,
   isAnswerCorrect,
 } from "@/data/questions";
+import { shuffle } from "@/utils/shuffle";
 
 type QuizProps = {
   module: Module;
@@ -18,7 +19,17 @@ type QuizProps = {
 const BLOCK_DURATION = 60;
 
 export default function Quiz({ module, onFinish }: QuizProps) {
-  const allQuestions = getQuestionsByModule(module.id);
+  // Mélange UNE SEULE FOIS au démarrage (useState initializer)
+  const [allQuestions] = useState<Question[]>(() => {
+    const base = getQuestionsByModule(module.id);
+    return shuffle(base).map((q) => {
+      if (q.type === "qcm") {
+        return { ...q, options: shuffle(q.options) };
+      }
+      return q;
+    });
+  });
+
   const [queue, setQueue] = useState<Question[]>(allQuestions);
   const [current, setCurrent] = useState<Question | null>(
     allQuestions[0] || null

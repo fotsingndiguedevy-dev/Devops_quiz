@@ -62,7 +62,11 @@ export default function Home() {
           onBackHome={handleBackHome}
         />
       ) : quizStarted && selectedModule ? (
-        <Quiz module={selectedModule} onFinish={handleFinishQuiz} />
+        <Quiz
+          key={`${selectedModule.id}-${Date.now()}`}
+          module={selectedModule}
+          onFinish={handleFinishQuiz}
+        />
       ) : selectedModule ? (
         <ModuleView
           module={selectedModule}
