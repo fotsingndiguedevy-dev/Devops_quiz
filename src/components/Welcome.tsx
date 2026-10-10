@@ -47,7 +47,11 @@ export default function Welcome({ onStart }: WelcomeProps) {
 
         <motion.button
           onClick={onStart}
-          whileHover={{ scale: 1.05 }}
+          whileHover={{
+            scale: 1.05,
+            boxShadow:
+              "0 0 35px rgba(34, 211, 238, 0.8), 0 0 60px rgba(34, 197, 94, 0.5)",
+          }}
           whileTap={{ scale: 0.95 }}
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
           className="px-8 py-4 rounded-xl font-bold text-lg text-white bg-gradient-to-r from-cyan-500 to-green-500 shadow-lg shadow-cyan-500/30 cursor-pointer"
