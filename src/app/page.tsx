@@ -5,6 +5,7 @@ import Sidebar from "@/components/Sidebar";
 import ModuleView from "@/components/ModuleView";
 import Quiz from "@/components/Quiz";
 import QuizEnd from "@/components/QuizEnd";
+import FloatingMenu from "@/components/FloatingMenu";
 import { Module } from "@/data/modules";
 
 export default function Home() {
@@ -42,6 +43,8 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-slate-900 text-white">
+      {!sidebarOpen && <FloatingMenu onClick={() => setSidebarOpen(true)} />}
+
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
