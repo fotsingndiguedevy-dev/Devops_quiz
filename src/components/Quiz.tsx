@@ -11,7 +11,7 @@ import {
 
 type QuizProps = {
   module: Module;
-  onFinish: () => void;
+  onFinish: (finalProgress: number, totalQuestions: number) => void;
 };
 
 // Temps de blocage en secondes (30 min = 1800s ; 1 min pour tester)
@@ -106,7 +106,7 @@ export default function Quiz({ module, onFinish }: QuizProps) {
     }
 
     // 4. Terminé !
-    onFinish();
+    onFinish(progress, allQuestions.length);
   }
 
   // ------- AFFICHAGE -------
@@ -140,8 +140,6 @@ export default function Quiz({ module, onFinish }: QuizProps) {
       </div>
     );
   }
-
-  const progressNumber = Math.round(progress);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-8">
@@ -180,9 +178,7 @@ export default function Quiz({ module, onFinish }: QuizProps) {
                     const showCorrect =
                       feedback && opt === current.answer && feedback.correct;
                     const showWrong =
-                      feedback &&
-                      isSelected &&
-                      !feedback.correct;
+                      feedback && isSelected && !feedback.correct;
 
                     return (
                       <motion.button
