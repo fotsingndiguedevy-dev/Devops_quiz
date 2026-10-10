@@ -63,35 +63,7 @@ npm install
 npm run dev
 
 Ouvrir http://localhost:3000 dans un navigateur.
-
----
-
-📁 Structure du projet
-
-```
-src/
-├── app/                   # Pages Next.js (App Router)
-│   ├── layout.tsx         # Layout global
-│   ├── page.tsx           # Page principale (orchestrateur)
-│   └── globals.css        # Styles Tailwind
-│
-├── components/            # Composants React réutilisables
-│   ├── Sidebar.tsx        # Menu latéral glissant + accordéon
-│   ├── Welcome.tsx        # Page d'accueil
-│   ├── ModuleView.tsx     # Vue d'un module sélectionné
-│   ├── Quiz.tsx           # Moteur du jeu
-│   ├── QuizEnd.tsx        # Écran de fin
-│   ├── ProgressBar.tsx    # Barre d'énergie
-│   └── FloatingMenu.tsx   # Bouton menu flottant
-│
-└── data/                  # Contenu séparé du code
-    ├── modules.ts         # Les 4 modules (Réseau, Bash, Python, Git)
-    ├── lessons.ts         # Structure des leçons
-    └── questions.ts       # Banque de questions (3 types)
-```
-
----
-
+ 
 🧠 Ce que j'ai appris en construisant ce projet
 
 · Construire une application Next.js complète de A à Z
