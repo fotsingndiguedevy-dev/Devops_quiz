@@ -7,19 +7,8 @@ export type QCMQuestion = {
   moduleId: string;
   type: "qcm";
   question: string;
+  codeSnippet?: string; // ← Optionnel : affiche un code erroné au-dessus
   options: string[];
-  answer: string;
-  explanation: string;
-  encouragement: string;
-  retryQuestion: string;
-};
-
-export type CorrectionQuestion = {
-  id: string;
-  moduleId: string;
-  type: "correction";
-  instruction: string;
-  wrongCode: string;
   answer: string;
   explanation: string;
   encouragement: string;
@@ -38,25 +27,38 @@ export type DefinitionQuestion = {
   retryQuestion: string;
 };
 
-export type Question = QCMQuestion | CorrectionQuestion | DefinitionQuestion;
+// NOTE : le type "correction" n'est plus utilisé (toutes les anciennes
+// questions de correction ont été converties en QCM).
+// On le garde déclaré pour ne pas casser le reste du code, mais il
+// disparaîtra à une prochaine étape de nettoyage.
+export type CorrectionQuestion = {
+  id: string;
+  moduleId: string;
+  type: "correction";
+  instruction: string;
+  wrongCode: string;
+  answer: string;
+  explanation: string;
+  encouragement: string;
+  retryQuestion: string;
+};
+
+export type Question = QCMQuestion | DefinitionQuestion | CorrectionQuestion;
 
 // ============================================================
 // QUESTIONS — LEÇON 1 : PRÉ-REQUIS
 // ============================================================
 
 export const questions: Question[] = [
-  // ---------------- 🌐 RÉSEAU ----------------
+  // ==========================================================
+  // 🌐 RÉSEAU
+  // ==========================================================
   {
     id: "reseau-1",
     moduleId: "reseau",
     type: "qcm",
     question: "Que signifie « IP » dans « adresse IP » ?",
-    options: [
-      "Internet Protocol",
-      "Internal Position",
-      "Info Packet",
-      "Internet Port",
-    ],
+    options: ["Internet Protocol", "Internal Position", "Info Packet", "Internet Port"],
     answer: "Internet Protocol",
     explanation:
       "IP = Internet Protocol. C'est l'adresse unique qui identifie chaque machine sur un réseau, comme ton numéro de téléphone mais pour Internet.",
@@ -67,15 +69,13 @@ export const questions: Question[] = [
     id: "reseau-2",
     moduleId: "reseau",
     type: "definition",
-    definition:
-      "Système qui traduit les noms de domaine (comme google.com) en adresses IP.",
+    definition: "Système qui traduit les noms de domaine (comme google.com) en adresses IP.",
     answer: "DNS",
     acceptedAnswers: ["dns", "domain name system"],
     explanation:
       "Le DNS (Domain Name System) est l'annuaire d'Internet. Il transforme les noms faciles à retenir en adresses IP que les machines comprennent.",
     encouragement: "Ehhh tu es doué hein ! 🎉",
-    retryQuestion:
-      "Comment s'appelle le service qui fait le lien entre un nom de domaine et une IP ?",
+    retryQuestion: "Comment s'appelle le service qui fait le lien entre un nom de domaine et une IP ?",
   },
   {
     id: "reseau-3",
@@ -98,8 +98,7 @@ export const questions: Question[] = [
     id: "reseau-4",
     moduleId: "reseau",
     type: "definition",
-    definition:
-      "Machine qui fournit un service (site web, mail, fichier) à d'autres machines appelées clients.",
+    definition: "Machine qui fournit un service (site web, mail, fichier) à d'autres machines appelées clients.",
     answer: "serveur",
     acceptedAnswers: ["serveur", "server", "un serveur"],
     explanation:
@@ -110,10 +109,15 @@ export const questions: Question[] = [
   {
     id: "reseau-5",
     moduleId: "reseau",
-    type: "correction",
-    instruction:
-      "Ce lien n'est pas sécurisé. Corrige-le pour qu'il utilise le bon protocole :",
-    wrongCode: "http://monsecurite.com",
+    type: "qcm",
+    question: "Ce lien n'est pas sécurisé. Quelle version est correcte ?",
+    codeSnippet: "http://monsecurite.com",
+    options: [
+      "http://monsecurite.com",
+      "https://monsecurite.com",
+      "https:/monsecurite.com",
+      "https//monsecurite.com",
+    ],
     answer: "https://monsecurite.com",
     explanation:
       "Il faut remplacer « http:// » par « https:// ». Le S ajoute le chiffrement, indispensable pour un site de sécurité.",
@@ -121,7 +125,9 @@ export const questions: Question[] = [
     retryQuestion: "Quel protocole faut-il utiliser pour un site sécurisé ?",
   },
 
-  // ---------------- 💻 BASH ----------------
+  // ==========================================================
+  // 💻 BASH
+  // ==========================================================
   {
     id: "bash-1",
     moduleId: "bash",
@@ -137,10 +143,10 @@ export const questions: Question[] = [
   {
     id: "bash-2",
     moduleId: "bash",
-    type: "correction",
-    instruction:
-      "Cette commande ne fonctionne pas. Ajoute l'espace manquant :",
-    wrongCode: "cd..",
+    type: "qcm",
+    question: "Cette commande ne fonctionne pas. Quelle version est correcte ?",
+    codeSnippet: "cd..",
+    options: ["cd..", "cd ..", "cd .", "cd..."],
     answer: "cd ..",
     explanation:
       "En Bash, chaque argument est séparé par un espace. « cd.. » est lu comme une seule commande inconnue. La bonne syntaxe est « cd .. » (remonter d'un dossier).",
@@ -151,8 +157,7 @@ export const questions: Question[] = [
     id: "bash-3",
     moduleId: "bash",
     type: "definition",
-    definition:
-      "Commande qui affiche le chemin complet du dossier dans lequel on se trouve actuellement.",
+    definition: "Commande qui affiche le chemin complet du dossier dans lequel on se trouve actuellement.",
     answer: "pwd",
     acceptedAnswers: ["pwd", "print working directory"],
     explanation:
@@ -176,8 +181,7 @@ export const questions: Question[] = [
     id: "bash-5",
     moduleId: "bash",
     type: "definition",
-    definition:
-      "Commande qui permet de changer les permissions d'un fichier ou d'un dossier.",
+    definition: "Commande qui permet de changer les permissions d'un fichier ou d'un dossier.",
     answer: "chmod",
     acceptedAnswers: ["chmod", "change mode"],
     explanation:
@@ -186,7 +190,9 @@ export const questions: Question[] = [
     retryQuestion: "Quelle commande gère les droits d'accès d'un fichier ?",
   },
 
-  // ---------------- 🐍 PYTHON ----------------
+  // ==========================================================
+  // 🐍 PYTHON
+  // ==========================================================
   {
     id: "python-1",
     moduleId: "python",
@@ -195,17 +201,22 @@ export const questions: Question[] = [
     options: ["echo()", "print()", "console.log()", "write()"],
     answer: "print()",
     explanation:
-      "En Python, on utilise « print() » pour afficher quelque chose. Exemple : print(\"Salut le Cameroun !\") affiche ce texte dans le terminal.",
+      'En Python, on utilise « print() » pour afficher quelque chose. Exemple : print("Salut le Cameroun !") affiche ce texte dans le terminal.',
     encouragement: "Ehhh tu gères bien hein ! 🎉",
     retryQuestion: "Quelle fonction Python affiche du texte à l'écran ?",
   },
   {
     id: "python-2",
     moduleId: "python",
-    type: "correction",
-    instruction:
-      "En Python 3, cette ligne est invalide. Corrige-la en ajoutant les parenthèses :",
-    wrongCode: 'print "Bonjour"',
+    type: "qcm",
+    question: "Cette ligne est invalide en Python 3. Quelle version est correcte ?",
+    codeSnippet: 'print "Bonjour"',
+    options: [
+      'print "Bonjour"',
+      'print("Bonjour")',
+      'print("Bonjour"',
+      'println("Bonjour")',
+    ],
     answer: 'print("Bonjour")',
     explanation:
       "En Python 3, print est une fonction, pas une instruction. Il faut donc des parenthèses obligatoires autour de ce qu'on veut afficher.",
@@ -216,8 +227,7 @@ export const questions: Question[] = [
     id: "python-3",
     moduleId: "python",
     type: "definition",
-    definition:
-      "Structure qui permet de répéter un bloc de code plusieurs fois automatiquement.",
+    definition: "Structure qui permet de répéter un bloc de code plusieurs fois automatiquement.",
     answer: "boucle",
     acceptedAnswers: ["boucle", "loop", "for", "while", "une boucle"],
     explanation:
@@ -233,17 +243,17 @@ export const questions: Question[] = [
     options: ["function", "def", "func", "lambda"],
     answer: "def",
     explanation:
-      "« def » = define. Exemple : def saluer(nom): return f\"Salut {nom} !\" — c'est la base pour organiser son code.",
+      '« def » = define. Exemple : def saluer(nom): return f"Salut {nom} !" — c\'est la base pour organiser son code.',
     encouragement: "Tu es devenu Pythonista ! 🐍✨",
     retryQuestion: "Quel mot-clé introduit la définition d'une fonction Python ?",
   },
   {
     id: "python-5",
     moduleId: "python",
-    type: "correction",
-    instruction:
-      "Cette condition compare x à 5, mais elle est mal écrite. Corrige l'opérateur :",
-    wrongCode: "if x = 5:",
+    type: "qcm",
+    question: "Cette condition est mal écrite. Quelle version est correcte ?",
+    codeSnippet: "if x = 5:",
+    options: ["if x = 5:", "if x == 5:", "if x === 5:", "if x != 5:"],
     answer: "if x == 5:",
     explanation:
       "En Python, « = » sert à affecter une valeur, et « == » sert à comparer. Ici on veut vérifier si x vaut 5, donc on utilise « == ».",
@@ -251,7 +261,9 @@ export const questions: Question[] = [
     retryQuestion: "Quel opérateur utilise-t-on en Python pour tester une égalité ?",
   },
 
-  // ---------------- 🌿 GIT ----------------
+  // ==========================================================
+  // 🌿 GIT
+  // ==========================================================
   {
     id: "git-1",
     moduleId: "git",
@@ -267,10 +279,15 @@ export const questions: Question[] = [
   {
     id: "git-2",
     moduleId: "git",
-    type: "correction",
-    instruction:
-      "Cette commande Git contient une faute de frappe. Corrige-la :",
-    wrongCode: 'git commmit -m "mon test"',
+    type: "qcm",
+    question: "Cette commande contient une faute. Quelle version est correcte ?",
+    codeSnippet: 'git commmit -m "mon test"',
+    options: [
+      'git commmit -m "mon test"',
+      'git commit -m "mon test"',
+      'git comit -m "mon test"',
+      'git commited -m "mon test"',
+    ],
     answer: 'git commit -m "mon test"',
     explanation:
       "« commmit » est mal orthographié (3 m !). La bonne commande est « git commit », qui enregistre une version de ton travail avec un message.",
@@ -281,8 +298,7 @@ export const questions: Question[] = [
     id: "git-3",
     moduleId: "git",
     type: "definition",
-    definition:
-      "En Git, c'est l'action qui consiste à sauvegarder une version de son code avec un message descriptif.",
+    definition: "En Git, c'est l'action qui consiste à sauvegarder une version de son code avec un message descriptif.",
     answer: "commit",
     acceptedAnswers: ["commit", "un commit", "faire un commit"],
     explanation:
@@ -305,10 +321,15 @@ export const questions: Question[] = [
   {
     id: "git-5",
     moduleId: "git",
-    type: "correction",
-    instruction:
-      "Cette commande crée une branche, mais l'option est mal orthographiée. Corrige-la :",
-    wrongCode: "git checkout -B nouvelle-branche",
+    type: "qcm",
+    question: "Cette commande crée une branche, mais l'option est mal orthographiée. Quelle version est correcte ?",
+    codeSnippet: "git checkout -B nouvelle-branche",
+    options: [
+      "git checkout -B nouvelle-branche",
+      "git checkout -b nouvelle-branche",
+      "git checkout --b nouvelle-branche",
+      "git checkout -nb nouvelle-branche",
+    ],
     answer: "git checkout -b nouvelle-branche",
     explanation:
       "L'option « -b » (minuscule) crée une nouvelle branche et bascule dessus. « -B » (majuscule) a un autre sens (réinitialiser). Une lettre change tout !",
@@ -318,7 +339,7 @@ export const questions: Question[] = [
 ];
 
 // ============================================================
-// UTILITAIRE : normalisation des réponses écrites
+// UTILITAIRES
 // ============================================================
 
 export function normalizeAnswer(input: string): string {
@@ -326,15 +347,12 @@ export function normalizeAnswer(input: string): string {
     .toLowerCase()
     .trim()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // retire les accents
-    .replace(/[.,!?;:]/g, "") // retire la ponctuation
-    .replace(/\s+/g, " "); // espaces multiples → un seul
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[.,!?;:]/g, "")
+    .replace(/\s+/g, " ");
 }
 
-export function isAnswerCorrect(
-  question: Question,
-  userInput: string
-): boolean {
+export function isAnswerCorrect(question: Question, userInput: string): boolean {
   const input = normalizeAnswer(userInput);
 
   if (question.type === "qcm") {
@@ -346,9 +364,7 @@ export function isAnswerCorrect(
   }
 
   if (question.type === "definition") {
-    return question.acceptedAnswers.some(
-      (acc) => normalizeAnswer(acc) === input
-    );
+    return question.acceptedAnswers.some((acc) => normalizeAnswer(acc) === input);
   }
 
   return false;
