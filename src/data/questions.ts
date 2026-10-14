@@ -6,9 +6,9 @@ export type QCMQuestion = {
   id: string;
   moduleId: string;
   type: "qcm";
-  question?: string;         // Question classique (QCM pur)
-  definition?: string;        // Définition affichée dans un encadré (définition convertie)
-  codeSnippet?: string;       // Code erroné affiché en bloc
+  question?: string;
+  definition?: string;
+  codeSnippet?: string;
   options: string[];
   answer: string;
   explanation: string;
@@ -43,7 +43,7 @@ export type CorrectionQuestion = {
 export type Question = QCMQuestion | DefinitionQuestion | CorrectionQuestion;
 
 // ============================================================
-// QUESTIONS — 15 par module (toutes en QCM)
+// QUESTIONS — 15 par module
 // ============================================================
 
 export const questions: Question[] = [
@@ -466,6 +466,205 @@ export const questions: Question[] = [
   },
 
   // ==========================================================
+  // 🐚 SHELL (15 questions)
+  // ==========================================================
+  {
+    id: "shell-1",
+    moduleId: "shell",
+    type: "qcm",
+    question: "Quelle ligne doit se trouver au tout début d'un script Shell ?",
+    options: ["#!bin/bash", "#!/bin/bash", "#!/bash", "#/bin/bash"],
+    answer: "#!/bin/bash",
+    explanation:
+      "Le shebang « #!/bin/bash » indique au système quel interpréteur utiliser pour exécuter le script. Sans lui, le script pourrait ne pas fonctionner correctement.",
+    encouragement: "Tu es chaud comme le piment ! 🌶️",
+    retryQuestion: "Quelle est la ligne magique à mettre en début de script ?",
+  },
+  {
+    id: "shell-2",
+    moduleId: "shell",
+    type: "qcm",
+    question: "Comment déclare-t-on une variable en Bash ?",
+    options: ['var nom = "Devy"', 'nom = "Devy"', 'nom="Devy"', 'let nom = "Devy"'],
+    answer: 'nom="Devy"',
+    explanation:
+      'En Bash, on affecte une valeur sans espaces autour du signe =. Exemple : « nom="Devy" ». Pour l\'utiliser ensuite : « echo $nom ».',
+    encouragement: "C'est ça le flow ! 💪",
+    retryQuestion: "Comment déclarer une variable sans espaces autour du égal ?",
+  },
+  {
+    id: "shell-3",
+    moduleId: "shell",
+    type: "qcm",
+    question: "Quelle commande rend un script exécutable ?",
+    options: ["chmod +x script.sh", "chmod +r script.sh", "execute script.sh", "run script.sh"],
+    answer: "chmod +x script.sh",
+    explanation:
+      "« chmod +x » ajoute la permission d'exécution au fichier. Après ça, tu peux lancer ton script avec « ./script.sh ».",
+    encouragement: "Travail de champion ! 🏆",
+    retryQuestion: "Quelle commande ajoute la permission d'exécution à un script ?",
+  },
+  {
+    id: "shell-4",
+    moduleId: "shell",
+    type: "qcm",
+    question: "Comment afficher la valeur d'une variable « nom » ?",
+    options: ["echo nom", "echo $nom", "print nom", "show nom"],
+    answer: "echo $nom",
+    explanation:
+      "Le symbole « $ » devant le nom indique à Bash qu'il faut afficher la VALEUR de la variable, pas son nom. « echo $nom » affiche donc le contenu de nom.",
+    encouragement: "Tu es bouillant ! 🔥",
+    retryQuestion: "Quel symbole indique qu'on veut la valeur d'une variable ?",
+  },
+  {
+    id: "shell-5",
+    moduleId: "shell",
+    type: "qcm",
+    question: "Que fait l'opérateur « >> » en Bash ?",
+    options: [
+      "Il compare deux nombres",
+      "Il ajoute du contenu à la fin d'un fichier",
+      "Il remplace le contenu d'un fichier",
+      "Il supprime un fichier",
+    ],
+    answer: "Il ajoute du contenu à la fin d'un fichier",
+    explanation:
+      "« >> » ajoute à la fin, alors que « > » écrase le contenu. Exemple : « echo Salut >> log.txt » ajoute « Salut » à la fin de log.txt.",
+    encouragement: "Tu penses comme un vrai dev ! 🧠",
+    retryQuestion: "Quelle est la différence entre > et >> ?",
+  },
+  {
+    id: "shell-6",
+    moduleId: "shell",
+    type: "qcm",
+    definition: "Première ligne d'un script Shell qui indique quel interpréteur utiliser.",
+    options: ["Shebang", "Header", "Banner", "Magic line"],
+    answer: "Shebang",
+    explanation:
+      "Le shebang (#!/bin/bash) est la première ligne d'un script. Il dit au système : « utilise bash pour exécuter ce fichier ».",
+    encouragement: "Ehhh tu es doué hein ! 🎉",
+    retryQuestion: "Comment s'appelle la ligne qui indique l'interpréteur d'un script ?",
+  },
+  {
+    id: "shell-7",
+    moduleId: "shell",
+    type: "qcm",
+    definition: "Symbole précédant une variable pour accéder à sa valeur en Bash.",
+    options: ["$", "#", "@", "&"],
+    answer: "$",
+    explanation:
+      "Le « $ » permet d'accéder à la valeur d'une variable. Exemple : « echo $nom » affiche la valeur de nom, pas le mot « nom ».",
+    encouragement: "Tu gères comme un boss ! 🔥",
+    retryQuestion: "Quel symbole permet d'accéder à la valeur d'une variable ?",
+  },
+  {
+    id: "shell-8",
+    moduleId: "shell",
+    type: "qcm",
+    definition: "Structure conditionnelle qui exécute un bloc si une condition est vraie.",
+    options: ["if", "loop", "for", "while"],
+    answer: "if",
+    explanation:
+      "« if » teste une condition. Exemple : « if [ $age -gt 18 ]; then echo Majeur; fi ». C'est la base des scripts intelligents.",
+    encouragement: "Tu avances comme une fusée ! 🚀",
+    retryQuestion: "Quel mot-clé introduit une condition en Bash ?",
+  },
+  {
+    id: "shell-9",
+    moduleId: "shell",
+    type: "qcm",
+    definition: "Bloc qui répète des instructions pour chaque élément d'une liste.",
+    options: ["Boucle for", "Condition if", "Variable", "Fonction"],
+    answer: "Boucle for",
+    explanation:
+      "« for i in 1 2 3; do echo $i; done » affiche 1, 2, puis 3. La boucle for parcourt une liste et répète le bloc pour chaque élément.",
+    encouragement: "Ça c'est du travail propre ! 🎯",
+    retryQuestion: "Quelle boucle parcourt une liste d'éléments ?",
+  },
+  {
+    id: "shell-10",
+    moduleId: "shell",
+    type: "qcm",
+    definition: "Argument passé à un script, accessible via $1, $2, etc.",
+    options: ["Paramètre", "Variable", "Fichier", "Option"],
+    answer: "Paramètre",
+    explanation:
+      "Les paramètres sont les arguments passés à un script. « ./script.sh Devy 25 » → $1 = Devy, $2 = 25. $# donne le nombre total.",
+    encouragement: "Tu deviens un(e) pro du shell ! 🐚",
+    retryQuestion: "Comment appelle-t-on les arguments passés à un script ($1, $2) ?",
+  },
+  {
+    id: "shell-11",
+    moduleId: "shell",
+    type: "qcm",
+    question: "Cette ligne de shebang contient une erreur. Quelle version est correcte ?",
+    codeSnippet: "#!bin/bash",
+    options: ["#!bin/bash", "#!/bin/bash", "#!/bash", "#/bin/bash"],
+    answer: "#!/bin/bash",
+    explanation:
+      "Il faut deux slashs : « #!/bin/bash ». Le premier désigne la racine, le second sépare bin de bash.",
+    encouragement: "Tu as l'œil du lynx ! 👀",
+    retryQuestion: "Combien de slashs contient un shebang correct ?",
+  },
+  {
+    id: "shell-12",
+    moduleId: "shell",
+    type: "qcm",
+    question: "Cette déclaration de variable est invalide. Quelle version est correcte ?",
+    codeSnippet: 'nom = "Devy"',
+    options: ['nom = "Devy"', 'nom="Devy"', 'nom := "Devy"', 'let nom = "Devy"'],
+    answer: 'nom="Devy"',
+    explanation:
+      'En Bash, il ne doit PAS y avoir d\'espaces autour du =. « nom = "Devy" » est interprété comme une commande inconnue nommée « nom ».',
+    encouragement: "Tu es fort comme un lion ! 🦁",
+    retryQuestion: "Faut-il des espaces autour du signe = en Bash ?",
+  },
+  {
+    id: "shell-13",
+    moduleId: "shell",
+    type: "qcm",
+    question: "Cette condition est mal écrite. Quelle version est correcte ?",
+    codeSnippet: "if [$age -gt 18]",
+    options: ["if [$age -gt 18]", "if [ $age -gt 18 ]", "if ($age > 18)", "if $age > 18"],
+    answer: "if [ $age -gt 18 ]",
+    explanation:
+      "En Bash, les crochets [ ] doivent être entourés d'espaces. « [ $age -gt 18 ] » est la syntaxe correcte. -gt signifie greater than (>).",
+    encouragement: "Tu maîtrises les détails ! 🎯",
+    retryQuestion: "Faut-il des espaces autour des crochets dans une condition Bash ?",
+  },
+  {
+    id: "shell-14",
+    moduleId: "shell",
+    type: "qcm",
+    question: "Cette boucle for est incomplète. Quelle version est correcte ?",
+    codeSnippet: "for i in 1 2 3; echo $i; done",
+    options: [
+      "for i in 1 2 3; echo $i; done",
+      "for i in 1 2 3; do echo $i; done",
+      "for i in 1 2 3 do echo $i done",
+      "for i in (1 2 3); echo $i; done",
+    ],
+    answer: "for i in 1 2 3; do echo $i; done",
+    explanation:
+      "Une boucle for en Bash doit contenir le mot-clé « do » après la liste, puis « done » à la fin. Sans do, la boucle ne s'exécute pas correctement.",
+    encouragement: "Bravo, tu maîtrises les boucles ! 🔁",
+    retryQuestion: "Quel mot-clé suit la liste dans une boucle for Bash ?",
+  },
+  {
+    id: "shell-15",
+    moduleId: "shell",
+    type: "qcm",
+    question: "Ce script n'affichera rien. Quelle version est correcte ?",
+    codeSnippet: "echo $nom",
+    options: ["echo $nom", 'echo "$nom"', "print $nom", "show $nom"],
+    answer: 'echo "$nom"',
+    explanation:
+      'Mettre la variable entre guillemets doubles « "$nom" » est une bonne pratique, car ça préserve les espaces. Les deux fonctionnent, mais la version entre guillemets est plus sûre.',
+    encouragement: "Bravo, tu finis en beauté ! 🏆",
+    retryQuestion: "Pourquoi entourer une variable de guillemets doubles ?",
+  },
+
+  // ==========================================================
   // 🐍 PYTHON (15 questions)
   // ==========================================================
   {
@@ -594,12 +793,7 @@ export const questions: Question[] = [
     type: "qcm",
     question: "Cette ligne est invalide en Python 3. Quelle version est correcte ?",
     codeSnippet: 'print "Bonjour"',
-    options: [
-      'print "Bonjour"',
-      'print("Bonjour")',
-      'print("Bonjour"',
-      'println("Bonjour")',
-    ],
+    options: ['print "Bonjour"', 'print("Bonjour")', 'print("Bonjour"', 'println("Bonjour")'],
     answer: 'print("Bonjour")',
     explanation:
       "En Python 3, print est une fonction, pas une instruction. Il faut donc des parenthèses obligatoires autour de ce qu'on veut afficher.",
