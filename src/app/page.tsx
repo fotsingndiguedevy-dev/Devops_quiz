@@ -66,6 +66,7 @@ export default function Home() {
           key={`${selectedModule.id}-${Date.now()}`}
           module={selectedModule}
           onFinish={handleFinishQuiz}
+          onBackToMenu={handleBackHome}
         />
       ) : selectedModule ? (
         <ModuleView
