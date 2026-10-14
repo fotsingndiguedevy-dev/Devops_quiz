@@ -6,8 +6,9 @@ export type QCMQuestion = {
   id: string;
   moduleId: string;
   type: "qcm";
-  question: string;
-  codeSnippet?: string;
+  question?: string;         // Question classique (QCM pur)
+  definition?: string;        // Définition affichée dans un encadré (définition convertie)
+  codeSnippet?: string;       // Code erroné affiché en bloc
   options: string[];
   answer: string;
   explanation: string;
@@ -42,8 +43,7 @@ export type CorrectionQuestion = {
 export type Question = QCMQuestion | DefinitionQuestion | CorrectionQuestion;
 
 // ============================================================
-// QUESTIONS — LEÇON 1 : PRÉ-REQUIS
-// 15 questions par module (5 QCM + 5 Définitions + 5 Corrections-QCM)
+// QUESTIONS — 15 par module (toutes en QCM)
 // ============================================================
 
 export const questions: Question[] = [
@@ -125,15 +125,13 @@ export const questions: Question[] = [
     encouragement: "Tu penses comme un vrai dev ! 🧠",
     retryQuestion: "À quoi sert un routeur sur un réseau ?",
   },
-
-  // Réseau — Définitions
   {
     id: "reseau-6",
     moduleId: "reseau",
-    type: "definition",
+    type: "qcm",
     definition: "Système qui traduit les noms de domaine (comme google.com) en adresses IP.",
+    options: ["DNS", "HTTP", "FTP", "IP"],
     answer: "DNS",
-    acceptedAnswers: ["dns", "domain name system"],
     explanation:
       "Le DNS (Domain Name System) est l'annuaire d'Internet. Il transforme les noms faciles à retenir en adresses IP que les machines comprennent.",
     encouragement: "Ehhh tu es doué hein ! 🎉",
@@ -142,10 +140,10 @@ export const questions: Question[] = [
   {
     id: "reseau-7",
     moduleId: "reseau",
-    type: "definition",
+    type: "qcm",
     definition: "Machine qui fournit un service (site web, mail, fichier) à d'autres machines appelées clients.",
-    answer: "serveur",
-    acceptedAnswers: ["serveur", "server", "un serveur"],
+    options: ["Serveur", "Routeur", "Switch", "Client"],
+    answer: "Serveur",
     explanation:
       "Un serveur est une machine qui attend les demandes des clients et y répond. Quand tu ouvres un site, ton navigateur (client) demande, le serveur répond.",
     encouragement: "Tu gères comme un boss ! 🔥",
@@ -154,10 +152,10 @@ export const questions: Question[] = [
   {
     id: "reseau-8",
     moduleId: "reseau",
-    type: "definition",
+    type: "qcm",
     definition: "Suite de règles qui permet à deux machines de communiquer sur un réseau.",
-    answer: "protocole",
-    acceptedAnswers: ["protocole", "protocol", "un protocole"],
+    options: ["Protocole", "Câble", "Serveur", "Fichier"],
+    answer: "Protocole",
     explanation:
       "Un protocole est un ensemble de règles. HTTP, TCP, IP, FTP… sont tous des protocoles. Sans eux, les machines ne sauraient pas comment se parler.",
     encouragement: "Tu avances comme une fusée ! 🚀",
@@ -166,10 +164,10 @@ export const questions: Question[] = [
   {
     id: "reseau-9",
     moduleId: "reseau",
-    type: "definition",
+    type: "qcm",
     definition: "Adresse unique qui identifie une machine sur un réseau.",
-    answer: "adresse IP",
-    acceptedAnswers: ["adresse ip", "ip", "une adresse ip"],
+    options: ["Adresse IP", "Adresse MAC", "URL", "Port"],
+    answer: "Adresse IP",
     explanation:
       "Une adresse IP identifie une machine sur un réseau. Exemple : 192.168.1.1. Chaque machine a la sienne, comme chaque maison a son adresse postale.",
     encouragement: "Ça c'est du travail propre ! 🎯",
@@ -178,17 +176,15 @@ export const questions: Question[] = [
   {
     id: "reseau-10",
     moduleId: "reseau",
-    type: "definition",
+    type: "qcm",
     definition: "Petit bloc de données envoyé sur un réseau, contenant les informations à transmettre.",
-    answer: "paquet",
-    acceptedAnswers: ["paquet", "packet", "un paquet"],
+    options: ["Paquet", "Octet", "Bit", "Fichier"],
+    answer: "Paquet",
     explanation:
       "Un paquet est un morceau de données transmis sur le réseau. Les fichiers sont découpés en paquets qui voyagent indépendamment puis sont réassemblés à l'arrivée.",
     encouragement: "Tu es devenu un(e) pro du réseau ! 🌐",
     retryQuestion: "Comment appelle-t-on un bloc de données qui circule sur un réseau ?",
   },
-
-  // Réseau — Corrections converties en QCM
   {
     id: "reseau-11",
     moduleId: "reseau",
@@ -338,15 +334,13 @@ export const questions: Question[] = [
     encouragement: "Tu es devenu un(e) pro du terminal ! 💻",
     retryQuestion: "À quoi sert la commande grep en Bash ?",
   },
-
-  // Bash — Définitions
   {
     id: "bash-6",
     moduleId: "bash",
-    type: "definition",
+    type: "qcm",
     definition: "Commande qui affiche le chemin complet du dossier dans lequel on se trouve actuellement.",
+    options: ["pwd", "cd", "ls", "path"],
     answer: "pwd",
-    acceptedAnswers: ["pwd", "print working directory"],
     explanation:
       "« pwd » = Print Working Directory. Elle t'affiche le chemin absolu du dossier où tu es. Très utile quand tu es perdu dans l'arborescence.",
     encouragement: "Ça c'est du travail propre ! 🎯",
@@ -355,10 +349,10 @@ export const questions: Question[] = [
   {
     id: "bash-7",
     moduleId: "bash",
-    type: "definition",
+    type: "qcm",
     definition: "Commande qui permet de changer les permissions d'un fichier ou d'un dossier.",
+    options: ["chmod", "chown", "chperm", "chacc"],
     answer: "chmod",
-    acceptedAnswers: ["chmod", "change mode"],
     explanation:
       "« chmod » = Change Mode. Elle modifie les droits (lecture, écriture, exécution) d'un fichier. Exemple : « chmod +x script.sh » rend un script exécutable.",
     encouragement: "Tu es chaud, le ndolé n'a qu'à bien se tenir ! 🍲",
@@ -367,10 +361,10 @@ export const questions: Question[] = [
   {
     id: "bash-8",
     moduleId: "bash",
-    type: "definition",
+    type: "qcm",
     definition: "Commande qui affiche le manuel d'utilisation d'une autre commande.",
+    options: ["man", "help", "info", "doc"],
     answer: "man",
-    acceptedAnswers: ["man", "manuel"],
     explanation:
       "« man » = manual. Exemple : « man ls » affiche le manuel de la commande ls. C'est TON meilleur ami quand tu ne sais pas comment utiliser une commande.",
     encouragement: "Excellente réponse, tu gères ! 🎉",
@@ -379,10 +373,10 @@ export const questions: Question[] = [
   {
     id: "bash-9",
     moduleId: "bash",
-    type: "definition",
+    type: "qcm",
     definition: "Préfixe qui permet d'exécuter une commande avec les droits d'administrateur (super-utilisateur).",
+    options: ["sudo", "admin", "root", "super"],
     answer: "sudo",
-    acceptedAnswers: ["sudo", "super user do"],
     explanation:
       "« sudo » = Super User DO. Il donne temporairement les droits d'admin à une commande. Exemple : « sudo apt install git ». À utiliser avec précaution !",
     encouragement: "Tu es bouillant ! 🔥",
@@ -391,17 +385,15 @@ export const questions: Question[] = [
   {
     id: "bash-10",
     moduleId: "bash",
-    type: "definition",
+    type: "qcm",
     definition: "Commande qui affiche un texte à l'écran ou écrit dans un fichier.",
+    options: ["echo", "print", "say", "write"],
     answer: "echo",
-    acceptedAnswers: ["echo"],
     explanation:
       "« echo » affiche du texte. Exemple : « echo Bonjour » affiche « Bonjour ». Très utile pour écrire dans un fichier : « echo Bonjour > fichier.txt ».",
     encouragement: "Tu progresses à toute vitesse ! 🚀",
     retryQuestion: "Quelle commande Bash affiche du texte à l'écran ?",
   },
-
-  // Bash — Corrections converties en QCM
   {
     id: "bash-11",
     moduleId: "bash",
@@ -536,15 +528,13 @@ export const questions: Question[] = [
     encouragement: "Tu es bouillant ! 🔥",
     retryQuestion: "Quel mot-clé permet d'importer un module en Python ?",
   },
-
-  // Python — Définitions
   {
     id: "python-6",
     moduleId: "python",
-    type: "definition",
+    type: "qcm",
     definition: "Structure qui permet de répéter un bloc de code plusieurs fois automatiquement.",
-    answer: "boucle",
-    acceptedAnswers: ["boucle", "loop", "for", "while", "une boucle"],
+    options: ["Boucle", "Fonction", "Variable", "Module"],
+    answer: "Boucle",
     explanation:
       "Une boucle (for ou while) exécute le même code plusieurs fois. Sans elle, tu devrais copier-coller 1000 fois la même ligne — pas très malin !",
     encouragement: "Tu penses comme un vrai dev ! 🧠",
@@ -553,10 +543,10 @@ export const questions: Question[] = [
   {
     id: "python-7",
     moduleId: "python",
-    type: "definition",
+    type: "qcm",
     definition: "Bloc de code réutilisable qui effectue une tâche précise et peut recevoir des paramètres.",
-    answer: "fonction",
-    acceptedAnswers: ["fonction", "function", "une fonction"],
+    options: ["Fonction", "Variable", "Boucle", "Classe"],
+    answer: "Fonction",
     explanation:
       "Une fonction est un bloc réutilisable. On la définit avec « def » et on l'appelle quand on en a besoin. Ça évite de répéter du code.",
     encouragement: "Excellent, tu gères les fonctions ! 💪",
@@ -565,10 +555,10 @@ export const questions: Question[] = [
   {
     id: "python-8",
     moduleId: "python",
-    type: "definition",
+    type: "qcm",
     definition: "Emplacement en mémoire qui stocke une valeur et à qui on donne un nom.",
-    answer: "variable",
-    acceptedAnswers: ["variable", "une variable"],
+    options: ["Variable", "Fonction", "Module", "Commentaire"],
+    answer: "Variable",
     explanation:
       "Une variable stocke une valeur. Exemple : « age = 25 » crée une variable nommée age qui contient 25. C'est la base de tout programme.",
     encouragement: "Tu progresses vite ! 📈",
@@ -577,10 +567,10 @@ export const questions: Question[] = [
   {
     id: "python-9",
     moduleId: "python",
-    type: "definition",
+    type: "qcm",
     definition: "Espacements en début de ligne qui déterminent la structure du code en Python.",
-    answer: "indentation",
-    acceptedAnswers: ["indentation", "indent", "l'indentation"],
+    options: ["Indentation", "Ponctuation", "Compilation", "Déclaration"],
+    answer: "Indentation",
     explanation:
       "En Python, l'indentation (les espaces en début de ligne) fait partie de la syntaxe. Elle remplace les accolades des autres langages. Mal indenté = erreur.",
     encouragement: "Tu es devenu un(e) pro Python ! 🐍",
@@ -589,17 +579,15 @@ export const questions: Question[] = [
   {
     id: "python-10",
     moduleId: "python",
-    type: "definition",
+    type: "qcm",
     definition: "Fichier contenant du code Python réutilisable que l'on peut importer dans un autre programme.",
-    answer: "module",
-    acceptedAnswers: ["module", "un module"],
+    options: ["Module", "Variable", "Boucle", "Fonction"],
+    answer: "Module",
     explanation:
       "Un module est un fichier .py qui contient des fonctions et variables réutilisables. Exemple : le module « math » contient des fonctions mathématiques.",
     encouragement: "Tu maîtrises les bases ! 🎓",
     retryQuestion: "Comment appelle-t-on un fichier Python réutilisable que l'on peut importer ?",
   },
-
-  // Python — Corrections converties en QCM
   {
     id: "python-11",
     moduleId: "python",
@@ -655,12 +643,7 @@ export const questions: Question[] = [
     type: "qcm",
     question: "Cette définition de fonction est incomplète. Quelle version est correcte ?",
     codeSnippet: "def saluer",
-    options: [
-      "def saluer",
-      "def saluer():",
-      "def saluer()",
-      "def saluer:",
-    ],
+    options: ["def saluer", "def saluer():", "def saluer()", "def saluer:"],
     answer: "def saluer():",
     explanation:
       "Une fonction Python se définit avec : « def » + nom + parenthèses + deux points. Exemple : « def saluer(): ». Les parenthèses sont obligatoires, même vides.",
@@ -749,15 +732,13 @@ export const questions: Question[] = [
     encouragement: "Tu es devenu un(e) pro de Git ! 🌿",
     retryQuestion: "Lequel télécharge les changements depuis le dépôt distant ?",
   },
-
-  // Git — Définitions
   {
     id: "git-6",
     moduleId: "git",
-    type: "definition",
+    type: "qcm",
     definition: "En Git, c'est l'action qui consiste à sauvegarder une version de son code avec un message descriptif.",
-    answer: "commit",
-    acceptedAnswers: ["commit", "un commit", "faire un commit"],
+    options: ["Commit", "Push", "Pull", "Clone"],
+    answer: "Commit",
     explanation:
       "Un commit est une « photo » de ton projet à un instant T. Chaque commit a un message qui explique ce qui a été fait. C'est l'unité de base de Git.",
     encouragement: "Commit après commit, tu deviens un pro ! 📸",
@@ -766,10 +747,10 @@ export const questions: Question[] = [
   {
     id: "git-7",
     moduleId: "git",
-    type: "definition",
+    type: "qcm",
     definition: "Ligne de développement parallèle qui permet de travailler sur une fonctionnalité sans affecter la version principale.",
-    answer: "branche",
-    acceptedAnswers: ["branche", "branch", "une branche"],
+    options: ["Branche", "Commit", "Remote", "Merge"],
+    answer: "Branche",
     explanation:
       "Une branche permet de travailler sur une feature en isolation. La branche principale (main) reste stable. On fusionne quand le travail est fini.",
     encouragement: "Tu penses comme un vrai développeur ! 🧠",
@@ -778,10 +759,10 @@ export const questions: Question[] = [
   {
     id: "git-8",
     moduleId: "git",
-    type: "definition",
+    type: "qcm",
     definition: "Espace de stockage qui contient l'historique complet d'un projet versionné.",
-    answer: "dépôt",
-    acceptedAnswers: ["depot", "dépôt", "repository", "repo", "un depot", "un dépôt"],
+    options: ["Dépôt", "Dossier", "Serveur", "Cloud"],
+    answer: "Dépôt",
     explanation:
       "Un dépôt (repository en anglais) contient tout l'historique de ton projet : fichiers, commits, branches. Local (sur ta machine) ou distant (sur GitHub).",
     encouragement: "Tu avances vite, bravo ! 🚀",
@@ -790,10 +771,10 @@ export const questions: Question[] = [
   {
     id: "git-9",
     moduleId: "git",
-    type: "definition",
+    type: "qcm",
     definition: "Action de combiner les changements d'une branche dans une autre.",
-    answer: "merge",
-    acceptedAnswers: ["merge", "fusion", "fusionner", "un merge"],
+    options: ["Merge", "Commit", "Push", "Fork"],
+    answer: "Merge",
     explanation:
       "« merge » fusionne une branche dans une autre. Exemple : « git merge feature/x » fusionne la branche feature/x dans la branche courante.",
     encouragement: "Tu maîtrises Git ! 🌿✨",
@@ -802,17 +783,15 @@ export const questions: Question[] = [
   {
     id: "git-10",
     moduleId: "git",
-    type: "definition",
+    type: "qcm",
     definition: "Dépôt distant (comme GitHub) vers lequel on envoie ou depuis lequel on récupère du code.",
-    answer: "remote",
-    acceptedAnswers: ["remote", "distant", "un remote"],
+    options: ["Remote", "Local", "Commit", "Branch"],
+    answer: "Remote",
     explanation:
       "Un « remote » est une version distante de ton dépôt (souvent sur GitHub ou GitLab). Par défaut, le premier remote s'appelle « origin ».",
     encouragement: "Tu es un(e) vrai(e) Git master ! 🏆",
     retryQuestion: "Comment appelle-t-on un dépôt distant en Git ?",
   },
-
-  // Git — Corrections converties en QCM
   {
     id: "git-11",
     moduleId: "git",
