@@ -9,6 +9,7 @@ import {
   isAnswerCorrect,
 } from "@/data/questions";
 import { shuffle } from "@/utils/shuffle";
+import { getMessageCorrect, getMessageFaux } from "@/data/encouragements";
 
 type QuizProps = {
   module: Module;
@@ -19,9 +20,11 @@ type QuizProps = {
 const BLOCK_DURATION = 60;
 
 export default function Quiz({ module, onFinish }: QuizProps) {
-  // Mélange UNE SEULE FOIS au démarrage (useState initializer)
+  // Mélange UNE SEULE FOIS au démarrage + on garde QCM et Définitions
   const [allQuestions] = useState<Question[]>(() => {
-    const base = getQuestionsByModule(module.id);
+    const base = getQuestionsByModule(module.id).filter(
+      (q) => q.type === "qcm" || q.type === "definition"
+    );
     return shuffle(base).map((q) => {
       if (q.type === "qcm") {
         return { ...q, options: shuffle(q.options) };
@@ -86,9 +89,7 @@ export default function Quiz({ module, onFinish }: QuizProps) {
     setFeedback({
       correct,
       explanation: current.explanation,
-      encouragement: correct
-        ? current.encouragement
-        : "Presque ! Recommence, tu es proche 💪",
+      encouragement: correct ? getMessageCorrect() : getMessageFaux(),
     });
 
     if (!correct) {
@@ -128,6 +129,7 @@ export default function Quiz({ module, onFinish }: QuizProps) {
     );
   }
 
+  // Écran de blocage
   if (blockedUntil) {
     const min = Math.floor(blockTimer / 60);
     const sec = blockTimer % 60;
@@ -175,9 +177,17 @@ export default function Quiz({ module, onFinish }: QuizProps) {
             {/* --- QCM --- */}
             {current.type === "qcm" && (
               <>
-                <h2 className="text-xl font-bold text-white mb-6">
+                <h2 className="text-xl font-bold text-white mb-4">
                   {current.question}
                 </h2>
+
+                {/* Code erroné affiché (optionnel) */}
+                {current.codeSnippet && (
+                  <pre className="bg-slate-950 border border-red-500/50 text-red-300 p-3 rounded-lg text-sm mb-4 overflow-x-auto">
+                    {current.codeSnippet}
+                  </pre>
+                )}
+
                 <div className="space-y-3">
                   {current.options.map((opt) => {
                     const isSelected = userInput === opt;
@@ -208,26 +218,6 @@ export default function Quiz({ module, onFinish }: QuizProps) {
                     );
                   })}
                 </div>
-              </>
-            )}
-
-            {/* --- CORRECTION --- */}
-            {current.type === "correction" && (
-              <>
-                <h2 className="text-xl font-bold text-white mb-2">
-                  {current.instruction}
-                </h2>
-                <pre className="bg-slate-950 border border-red-500/50 text-red-300 p-3 rounded-lg text-sm mb-4 overflow-x-auto">
-                  {current.wrongCode}
-                </pre>
-                <input
-                  type="text"
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  disabled={!!feedback}
-                  placeholder="Tape la version corrigée ici…"
-                  className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-500 focus:border-cyan-400 outline-none font-mono"
-                />
               </>
             )}
 
