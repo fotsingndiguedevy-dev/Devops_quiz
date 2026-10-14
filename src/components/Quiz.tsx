@@ -3,11 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ProgressBar from "./ProgressBar";
 import { Module } from "@/data/modules";
-import {
-  Question,
-  getQuestionsByModule,
-  isAnswerCorrect,
-} from "@/data/questions";
+import { Question, getQuestionsByModule, isAnswerCorrect } from "@/data/questions";
 import { shuffle } from "@/utils/shuffle";
 import { getMessageCorrect, getMessageFaux } from "@/data/encouragements";
 
@@ -20,10 +16,10 @@ type QuizProps = {
 const BLOCK_DURATION = 60;
 
 export default function Quiz({ module, onFinish }: QuizProps) {
-  // Mélange UNE SEULE FOIS au démarrage + on garde QCM et Définitions
+  // Mélange UNE SEULE FOIS au démarrage + uniquement QCM
   const [allQuestions] = useState<Question[]>(() => {
     const base = getQuestionsByModule(module.id).filter(
-      (q) => q.type === "qcm" || q.type === "definition"
+      (q) => q.type === "qcm"
     );
     return shuffle(base).map((q) => {
       if (q.type === "qcm") {
@@ -43,7 +39,7 @@ export default function Quiz({ module, onFinish }: QuizProps) {
     explanation: string;
     encouragement: string;
   }>(null);
-  const [userInput, setUserInput] = useState("");
+  const [selectedOption, setSelectedOption] = useState("");
   const [wrongQuestions, setWrongQuestions] = useState<Question[]>([]);
   const [blockedUntil, setBlockedUntil] = useState<number | null>(null);
   const [blockTimer, setBlockTimer] = useState(0);
@@ -69,7 +65,7 @@ export default function Quiz({ module, onFinish }: QuizProps) {
         setCurrent(allQuestions[0] ?? null);
         setWrongQuestions([]);
         setFeedback(null);
-        setUserInput("");
+        setSelectedOption("");
       } else {
         setBlockTimer(Math.ceil(remaining / 1000));
       }
@@ -82,7 +78,7 @@ export default function Quiz({ module, onFinish }: QuizProps) {
   // ------- VALIDER -------
   function handleValidate() {
     if (!current || feedback) return;
-    const correct = isAnswerCorrect(current, userInput);
+    const correct = isAnswerCorrect(current, selectedOption);
 
     setProgress((p) => Math.max(0, Math.min(100, correct ? p + 10 : p - 5)));
 
@@ -100,7 +96,7 @@ export default function Quiz({ module, onFinish }: QuizProps) {
   // ------- SUIVANT -------
   function handleNext() {
     setFeedback(null);
-    setUserInput("");
+    setSelectedOption("");
 
     const rest = queue.filter((q) => q.id !== current?.id);
 
@@ -121,7 +117,7 @@ export default function Quiz({ module, onFinish }: QuizProps) {
   }
 
   // ------- AFFICHAGE -------
-  if (!current) {
+  if (!current || current.type !== "qcm") {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-slate-300 text-xl">Aucune question disponible 😅</p>
@@ -174,74 +170,64 @@ export default function Quiz({ module, onFinish }: QuizProps) {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
           >
-            {/* --- QCM --- */}
-            {current.type === "qcm" && (
-              <>
-                <h2 className="text-xl font-bold text-white mb-4">
-                  {current.question}
-                </h2>
-
-                {/* Code erroné affiché (optionnel) */}
-                {current.codeSnippet && (
-                  <pre className="bg-slate-950 border border-red-500/50 text-red-300 p-3 rounded-lg text-sm mb-4 overflow-x-auto">
-                    {current.codeSnippet}
-                  </pre>
-                )}
-
-                <div className="space-y-3">
-                  {current.options.map((opt) => {
-                    const isSelected = userInput === opt;
-                    const showCorrect =
-                      feedback && opt === current.answer && feedback.correct;
-                    const showWrong =
-                      feedback && isSelected && !feedback.correct;
-
-                    return (
-                      <motion.button
-                        key={opt}
-                        whileHover={!feedback ? { scale: 1.02 } : {}}
-                        whileTap={!feedback ? { scale: 0.98 } : {}}
-                        disabled={!!feedback}
-                        onClick={() => setUserInput(opt)}
-                        className={`w-full text-left p-3 rounded-lg border transition-all cursor-pointer ${
-                          showCorrect
-                            ? "bg-green-500/20 border-green-400 text-white"
-                            : showWrong
-                            ? "bg-red-500/20 border-red-400 text-white"
-                            : isSelected
-                            ? "bg-cyan-500/20 border-cyan-400 text-white"
-                            : "bg-slate-800/40 border-slate-700 text-slate-300 hover:border-cyan-500/50"
-                        }`}
-                      >
-                        {opt}
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-
-            {/* --- DÉFINITION --- */}
-            {current.type === "definition" && (
-              <>
-                <p className="text-slate-400 text-sm mb-2">
-                  ✏️ Quelle est la réponse à cette définition ?
+            {/* Définition affichée en encadré (si présente) */}
+            {current.definition && (
+              <div className="mb-6 p-4 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+                <p className="text-cyan-300 text-xs uppercase font-bold mb-2 tracking-wider">
+                  📖 Définition
                 </p>
-                <h2 className="text-xl font-bold text-white mb-6">
+                <p className="text-white text-lg italic">
                   « {current.definition} »
-                </h2>
-                <input
-                  type="text"
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  disabled={!!feedback}
-                  placeholder="Tape ta réponse…"
-                  className="w-full p-3 rounded-lg bg-slate-800/60 border border-slate-700 text-white placeholder-slate-500 focus:border-cyan-400 outline-none"
-                />
-              </>
+                </p>
+              </div>
             )}
 
-            {/* --- FEEDBACK --- */}
+            {/* Question classique (si présente) */}
+            {current.question && (
+              <h2 className="text-xl font-bold text-white mb-4">
+                {current.question}
+              </h2>
+            )}
+
+            {/* Code erroné affiché (si présent) */}
+            {current.codeSnippet && (
+              <pre className="bg-slate-950 border border-red-500/50 text-red-300 p-3 rounded-lg text-sm mb-4 overflow-x-auto">
+                {current.codeSnippet}
+              </pre>
+            )}
+
+            {/* Options */}
+            <div className="space-y-3">
+              {current.options.map((opt) => {
+                const isSelected = selectedOption === opt;
+                const showCorrect =
+                  feedback && opt === current.answer && feedback.correct;
+                const showWrong = feedback && isSelected && !feedback.correct;
+
+                return (
+                  <motion.button
+                    key={opt}
+                    whileHover={!feedback ? { scale: 1.02 } : {}}
+                    whileTap={!feedback ? { scale: 0.98 } : {}}
+                    disabled={!!feedback}
+                    onClick={() => setSelectedOption(opt)}
+                    className={`w-full text-left p-3 rounded-lg border transition-all cursor-pointer ${
+                      showCorrect
+                        ? "bg-green-500/20 border-green-400 text-white"
+                        : showWrong
+                        ? "bg-red-500/20 border-red-400 text-white"
+                        : isSelected
+                        ? "bg-cyan-500/20 border-cyan-400 text-white"
+                        : "bg-slate-800/40 border-slate-700 text-slate-300 hover:border-cyan-500/50"
+                    }`}
+                  >
+                    {opt}
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            {/* Feedback */}
             <AnimatePresence>
               {feedback && (
                 <motion.div
@@ -266,22 +252,22 @@ export default function Quiz({ module, onFinish }: QuizProps) {
               )}
             </AnimatePresence>
 
-            {/* --- BOUTONS --- */}
+            {/* Boutons */}
             {!feedback ? (
               <motion.button
                 onClick={handleValidate}
-                disabled={!userInput.trim()}
+                disabled={!selectedOption}
                 whileHover={
-                  userInput.trim()
+                  selectedOption
                     ? {
                         scale: 1.03,
                         boxShadow: "0 0 25px rgba(34, 211, 238, 0.7)",
                       }
                     : {}
                 }
-                whileTap={userInput.trim() ? { scale: 0.97 } : {}}
+                whileTap={selectedOption ? { scale: 0.97 } : {}}
                 className={`mt-6 w-full py-3 rounded-lg font-bold transition-all cursor-pointer ${
-                  userInput.trim()
+                  selectedOption
                     ? "bg-gradient-to-r from-cyan-500 to-green-500 text-white"
                     : "bg-slate-800 text-slate-500 cursor-not-allowed"
                 }`}
