@@ -153,15 +153,19 @@ export default function Quiz({ module, onFinish }: QuizProps) {
       <div className="max-w-2xl w-full">
         <ProgressBar value={progress} />
 
-        <div className="flex justify-between items-center mt-4 mb-6 text-xs text-slate-500">
-          <span>
-            {module.emoji} {module.name}
-          </span>
-          <span>
-            {allQuestions.length - queue.length + 1} / {allQuestions.length}
-          </span>
-        </div>
-
+<div className="flex justify-between items-center mt-4 mb-6 text-xs text-slate-500">
+  <span className="flex items-center gap-2">
+    <img
+      src={module.logo}
+      alt={module.name}
+      className="w-4 h-4 object-contain"
+    />
+    {module.name}
+  </span>
+  <span>
+    {allQuestions.length - queue.length + 1} / {allQuestions.length}
+  </span>
+</div>
         <AnimatePresence mode="wait">
           <motion.div
             key={current.id}
