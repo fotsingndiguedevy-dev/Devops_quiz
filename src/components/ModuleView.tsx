@@ -15,15 +15,14 @@ export default function ModuleView({
 }: ModuleViewProps) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12">
-      <motion.button
-        onClick={onBack}
-        whileHover={{ x: -4 }}
-        whileTap={{ scale: 0.95 }}
-        className="self-start mb-6 text-slate-400 hover:text-white text-sm cursor-pointer"
-      >
-        ← Retour
-      </motion.button>
-
+<motion.button
+  onClick={onBack}
+  whileHover={{ x: -4 }}
+  whileTap={{ scale: 0.95 }}
+  className="self-start mt-16 mb-6 text-slate-400 hover:text-white text-sm cursor-pointer"
+>
+  🏠 Accueil
+</motion.button>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
