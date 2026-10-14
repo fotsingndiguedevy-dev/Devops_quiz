@@ -10,12 +10,13 @@ import { getMessageCorrect, getMessageFaux } from "@/data/encouragements";
 type QuizProps = {
   module: Module;
   onFinish: (finalProgress: number, totalQuestions: number) => void;
+  onBackToMenu: () => void;
 };
 
 // Temps de blocage en secondes (30 min = 1800s ; 60s pour tester)
 const BLOCK_DURATION = 60;
 
-export default function Quiz({ module, onFinish }: QuizProps) {
+export default function Quiz({ module, onFinish, onBackToMenu }: QuizProps) {
   // Mélange UNE SEULE FOIS au démarrage + uniquement QCM
   const [allQuestions] = useState<Question[]>(() => {
     const base = getQuestionsByModule(module.id).filter(
@@ -33,7 +34,7 @@ export default function Quiz({ module, onFinish }: QuizProps) {
   const [current, setCurrent] = useState<Question | null>(
     allQuestions[0] || null
   );
-  const [progress, setProgress] = useState(50);
+  const [progress, setProgress] = useState(10); // ← DÉPART À 10%
   const [feedback, setFeedback] = useState<null | {
     correct: boolean;
     explanation: string;
@@ -60,7 +61,7 @@ export default function Quiz({ module, onFinish }: QuizProps) {
         clearInterval(interval);
         setBlockedUntil(null);
         setBlockTimer(0);
-        setProgress(10);
+        setProgress(10); // ← Rechargé à 10%
         setQueue(allQuestions);
         setCurrent(allQuestions[0] ?? null);
         setWrongQuestions([]);
@@ -119,8 +120,14 @@ export default function Quiz({ module, onFinish }: QuizProps) {
   // ------- AFFICHAGE -------
   if (!current || current.type !== "qcm") {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center flex-col gap-4">
         <p className="text-slate-300 text-xl">Aucune question disponible 😅</p>
+        <button
+          onClick={onBackToMenu}
+          className="px-6 py-3 rounded-lg font-bold text-white bg-gradient-to-r from-cyan-500 to-green-500 cursor-pointer"
+        >
+          🏠 Retour à l'accueil
+        </button>
       </div>
     );
   }
@@ -144,6 +151,17 @@ export default function Quiz({ module, onFinish }: QuizProps) {
         <p className="text-slate-500 text-sm mt-4">
           Tu pourras rejouer automatiquement à 10% d'énergie ⚡
         </p>
+        <motion.button
+          onClick={onBackToMenu}
+          whileHover={{
+            scale: 1.05,
+            boxShadow: "0 0 25px rgba(34, 211, 238, 0.7)",
+          }}
+          whileTap={{ scale: 0.95 }}
+          className="mt-8 px-6 py-3 rounded-lg font-bold text-white bg-gradient-to-r from-cyan-500 to-green-500 cursor-pointer"
+        >
+          🏠 Retour à l'accueil
+        </motion.button>
       </div>
     );
   }
@@ -151,21 +169,39 @@ export default function Quiz({ module, onFinish }: QuizProps) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-8">
       <div className="max-w-2xl w-full">
-        <ProgressBar value={progress} />
+        {/* En-tête : bouton Accueil + Barre d'énergie */}
+        <div className="flex items-center gap-3 mb-4">
+          <motion.button
+            onClick={onBackToMenu}
+            whileHover={{
+              scale: 1.05,
+              boxShadow: "0 0 20px rgba(34, 211, 238, 0.5)",
+            }}
+            whileTap={{ scale: 0.95 }}
+            className="px-3 py-2 rounded-lg text-xs font-bold text-white bg-slate-800 border border-slate-700 hover:border-cyan-500/50 cursor-pointer whitespace-nowrap"
+            aria-label="Retour à l'accueil"
+          >
+            🏠 Accueil
+          </motion.button>
+          <div className="flex-1">
+            <ProgressBar value={progress} />
+          </div>
+        </div>
 
-<div className="flex justify-between items-center mt-4 mb-6 text-xs text-slate-500">
-  <span className="flex items-center gap-2">
-    <img
-      src={module.logo}
-      alt={module.name}
-      className="w-4 h-4 object-contain"
-    />
-    {module.name}
-  </span>
-  <span>
-    {allQuestions.length - queue.length + 1} / {allQuestions.length}
-  </span>
-</div>
+        <div className="flex justify-between items-center mb-6 text-xs text-slate-500">
+          <span className="flex items-center gap-2">
+            <img
+              src={module.logo}
+              alt={module.name}
+              className="w-4 h-4 object-contain"
+            />
+            {module.name}
+          </span>
+          <span>
+            {allQuestions.length - queue.length + 1} / {allQuestions.length}
+          </span>
+        </div>
+
         <AnimatePresence mode="wait">
           <motion.div
             key={current.id}
