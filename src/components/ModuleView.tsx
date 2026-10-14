@@ -34,9 +34,13 @@ export default function ModuleView({
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
-          className="text-8xl mb-6"
+          className="mb-6 flex justify-center"
         >
-          {module.emoji}
+          <img
+            src={module.logo}
+            alt={module.name}
+            className="w-32 h-32 object-contain"
+          />
         </motion.div>
 
         <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">
