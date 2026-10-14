@@ -50,13 +50,18 @@ export default function QuizEnd({
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 text-center">
+      {/* Logo du module */}
       <motion.div
         initial={{ scale: 0, rotate: -180 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: "spring", stiffness: 200, damping: 15 }}
-        className="text-8xl mb-4"
+        className="mb-4"
       >
-        {module.emoji}
+        <img
+          src={module.logo}
+          alt={module.name}
+          className="w-24 h-24 object-contain mx-auto"
+        />
       </motion.div>
 
       <motion.h1
@@ -131,7 +136,10 @@ export default function QuizEnd({
       >
         <motion.button
           onClick={onReplay}
-          whileHover={{ scale: 1.03 }}
+          whileHover={{
+            scale: 1.03,
+            boxShadow: "0 0 25px rgba(34, 211, 238, 0.7)",
+          }}
           whileTap={{ scale: 0.97 }}
           className="flex-1 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-cyan-500 to-green-500 shadow-lg shadow-cyan-500/30 cursor-pointer"
         >
@@ -140,7 +148,10 @@ export default function QuizEnd({
 
         <motion.button
           onClick={onBackHome}
-          whileHover={{ scale: 1.03 }}
+          whileHover={{
+            scale: 1.03,
+            boxShadow: "0 0 25px rgba(34, 211, 238, 0.5)",
+          }}
           whileTap={{ scale: 0.97 }}
           className="flex-1 py-3 rounded-xl font-bold text-slate-300 bg-slate-800 border border-slate-700 hover:border-cyan-500/50 cursor-pointer"
         >
