@@ -2,6 +2,10 @@ import { reseauLecon1, LessonQuestion } from "./lessons/reseau-lecon-1";
 import { reseauLecon2 } from "./lessons/reseau-lecon-2";
 import { reseauLecon3 } from "./lessons/reseau-lecon-3";
 import { reseauLecon4 } from "./lessons/reseau-lecon-4";
+import { reseauLecon5 } from "./lessons/reseau-lecon-5";
+import { reseauLecon6 } from "./lessons/reseau-lecon-6";
+import { reseauLecon7 } from "./lessons/reseau-lecon-7";
+import { reseauLecon8 } from "./lessons/reseau-lecon-8";
 
 export type Lesson = {
   id: string;
@@ -60,11 +64,33 @@ export const parts: Part[] = [
             title: "Leçon 4 — MAC et Ethernet",
             description: "Découvre l'adresse physique (MAC) et le protocole ARP.",
             questions: reseauLecon4,
+          },
+          {
+            id: "reseau-lecon-5",
+            title: "Leçon 5 — Adressage IP (IPv4)",
+            description: "La leçon la plus importante : masques, sous-réseaux, adresses privées.",
+            questions: reseauLecon5,
+          },
+          {
+            id: "reseau-lecon-6",
+            title: "Leçon 6 — IPv6",
+            description: "Découvre le futur d'Internet : 128 bits, autoconfiguration.",
+            questions: reseauLecon6,
+          },
+          {
+            id: "reseau-lecon-7",
+            title: "Leçon 7 — IP et routage",
+            description: "Table de routage, NAT, et comment les paquets voyagent sur Internet.",
+            questions: reseauLecon7,
+          },
+          {
+            id: "reseau-lecon-8",
+            title: "Leçon 8 — TCP et UDP",
+            description: "Comprends les ports et la différence entre TCP (fiable) et UDP (rapide).",
+            questions: reseauLecon8,
           }
-          // Les prochaines leçons viendront ici
         ],
       },
-      // Les autres modules viendront ici
     ],
   },
 ];

@@ -1,0 +1,92 @@
+import { LessonQuestion } from "./reseau-lecon-1";
+
+export const reseauLecon5: LessonQuestion[] = [
+  {
+    id: "reseau-l5-q1",
+    type: "qcm",
+    question: "Combien de bits compose une adresse IPv4 ?",
+    options: ["16 bits", "32 bits", "64 bits", "128 bits"],
+    answer: "32 bits",
+    explanation: "Une adresse IPv4 fait 32 bits, soit 4 octets (ex: 192.168.1.1). C'est la base de tout l'adressage réseau actuel.",
+    encouragement: "32 bits, c'est dans la poche ! 🧠",
+  },
+  {
+    id: "reseau-l5-q2",
+    type: "qcm",
+    question: "Que sépare le masque de sous-réseau dans une adresse IP ?",
+    options: [
+      "La partie publique et la partie privée",
+      "La partie réseau et la partie hôte",
+      "L'adresse MAC et l'adresse IP",
+      "Le TCP et l'UDP",
+    ],
+    answer: "La partie réseau et la partie hôte",
+    explanation: "Le masque indique combien de bits appartiennent au réseau et combien appartiennent à la machine (l'hôte).",
+    encouragement: "Le masque n'a plus de secret ! 🎭",
+  },
+  {
+    id: "reseau-l5-q3",
+    type: "qcm",
+    question: "Que signifie la notation /24 dans une adresse comme 192.168.1.0/24 ?",
+    options: [
+      "Le réseau a 24 machines",
+      "Le masque fait 24 bits, soit 255.255.255.0, avec 254 hôtes utilisables",
+      "Le réseau est divisé en 24 sous-réseaux",
+      "L'adresse IP fait 24 bits",
+    ],
+    answer: "Le masque fait 24 bits, soit 255.255.255.0, avec 254 hôtes utilisables",
+    explanation: "Un /24 signifie que les 24 premiers bits sont réservés au réseau. Il reste 8 bits pour les hôtes (2^8 = 256, moins l'adresse réseau et le broadcast = 254).",
+    encouragement: "Le CIDR, tu gères ! ✂️",
+  },
+  {
+    id: "reseau-l5-q4",
+    type: "qcm",
+    question: "Quelles sont les 3 plages d'adresses IP privées définies par la RFC 1918 ?",
+    options: [
+      "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16",
+      "192.168.0.0/24, 10.0.0.0/16, 172.16.0.0/8",
+      "127.0.0.0/8, 169.254.0.0/16, 224.0.0.0/4",
+      "8.8.8.8, 8.8.4.4, 1.1.1.1",
+    ],
+    answer: "10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16",
+    explanation: "Ces adresses ne sont pas routables sur Internet. Elles sont utilisées dans les réseaux locaux (LAN) et traduites via NAT pour sortir.",
+    encouragement: "Privé vs Public, c'est clair ! 🏠",
+  },
+  {
+    id: "reseau-l5-q5",
+    type: "qcm",
+    question: "Que représentent les adresses 127.0.0.1 et 0.0.0.0 ?",
+    options: [
+      "127.0.0.1 = Serveur DNS, 0.0.0.0 = Passerelle",
+      "127.0.0.1 = Adresse publique, 0.0.0.0 = Adresse privée",
+      "127.0.0.1 = localhost, 0.0.0.0 = toutes les interfaces / route par défaut",
+      "127.0.0.1 = Broadcast, 0.0.0.0 = Multicast",
+    ],
+    answer: "127.0.0.1 = localhost, 0.0.0.0 = toutes les interfaces / route par défaut",
+    explanation: "127.0.0.1 est ton propre ordinateur (localhost). 0.0.0.0 signifie 'toutes les interfaces' (quand un serveur écoute) ou 'route par défaut' (en routage).",
+    encouragement: "Les adresses spéciales, tu maîtrises ! 🎯",
+  },
+  {
+    id: "reseau-l5-q6",
+    type: "qcm",
+    question: "Quelle est la formule pour calculer le nombre d'hôtes utilisables dans un sous-réseau ?",
+    options: [
+      "2^(bits réseau)",
+      "2^(bits hôte) - 2",
+      "2^(bits hôte) + 2",
+      "Nombre total d'adresses / 2",
+    ],
+    answer: "2^(bits hôte) - 2",
+    explanation: "On soustrait 2 car la première adresse est l'adresse du réseau et la dernière est l'adresse de broadcast (diffusion), qui ne peuvent pas être attribuées à une machine.",
+    encouragement: "Le calcul d'hôtes n'a plus de secret ! 🧮",
+  },
+  {
+    id: "reseau-l5-q7",
+    type: "qcm",
+    question: "Si on découpe le réseau 192.168.1.0/24 en 4 sous-réseaux égaux, quel sera le masque de chaque sous-réseau ?",
+    options: ["/25", "/26", "/27", "/28"],
+    answer: "/26",
+    explanation: "Pour faire 4 sous-réseaux, on a besoin d'emprunter 2 bits au réseau (2^2 = 4). 24 + 2 = 26. Chaque sous-réseau aura un masque /26 (soit 62 hôtes utilisables).",
+    encouragement: "Le subnetting, c'est du lourd ! 🧠🔥",
+  }
+];
