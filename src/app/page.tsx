@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Welcome from "@/components/Welcome";
 import Sidebar from "@/components/Sidebar";
 import LessonView from "@/components/LessonView";
@@ -7,20 +7,25 @@ import Quiz from "@/components/Quiz";
 import QuizEnd from "@/components/QuizEnd";
 import FloatingMenu from "@/components/FloatingMenu";
 import { Lesson, parts } from "@/data/parts";
+import { getCompletedLessons, saveCompletedLesson } from "@/utils/storage";
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [selectedModuleLogo, setSelectedModuleLogo] = useState<string>("");
+  const [completedLessons, setCompletedLessons] = useState<string[]>([]);
   
   const [quizStarted, setQuizStarted] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
   const [finalProgress, setFinalProgress] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
 
-  // Trouver le logo du module parent pour l'afficher dans la leçon
+  // Charge la progression au démarrage
+  useEffect(() => {
+    setCompletedLessons(getCompletedLessons());
+  }, []);
+
   function handleSelectLesson(lesson: Lesson) {
-    // On cherche le module qui contient cette leçon pour récupérer son logo
     for (const part of parts) {
       for (const mod of part.modules) {
         if (mod.lessons.find(l => l.id === lesson.id)) {
@@ -36,6 +41,12 @@ export default function Home() {
   }
 
   function handleFinishQuiz(progress: number, total: number) {
+    if (selectedLesson) {
+      // Sauvegarde dans le localStorage
+      saveCompletedLesson(selectedLesson.id);
+      // Met à jour l'état local pour rafraîchir la sidebar
+      setCompletedLessons(getCompletedLessons());
+    }
     setFinalProgress(progress);
     setTotalQuestions(total);
     setQuizStarted(false);
@@ -57,6 +68,7 @@ export default function Home() {
         onClose={() => setSidebarOpen(false)}
         onSelectLesson={handleSelectLesson}
         selectedLessonId={selectedLesson?.id}
+        completedLessons={completedLessons}
       />
 
       {quizFinished && selectedLesson ? (
