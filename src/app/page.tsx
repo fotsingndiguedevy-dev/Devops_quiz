@@ -4,7 +4,7 @@ import Welcome from "@/components/Welcome";
 import Sidebar from "@/components/Sidebar";
 import LessonView from "@/components/LessonView";
 import Quiz from "@/components/Quiz";
-import QuizEnd from "@/components/QuizEnd";
+import LessonSummary from "@/components/LessonSummary"; // NOUVEAU
 import FloatingMenu from "@/components/FloatingMenu";
 import { Lesson, parts } from "@/data/parts";
 import { getCompletedLessons, saveCompletedLesson } from "@/utils/storage";
@@ -17,10 +17,7 @@ export default function Home() {
   
   const [quizStarted, setQuizStarted] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
-  const [finalProgress, setFinalProgress] = useState(0);
-  const [totalQuestions, setTotalQuestions] = useState(0);
 
-  // Charge la progression au démarrage
   useEffect(() => {
     setCompletedLessons(getCompletedLessons());
   }, []);
@@ -40,23 +37,36 @@ export default function Home() {
     setQuizFinished(false);
   }
 
-  function handleFinishQuiz(progress: number, total: number) {
-    if (selectedLesson) {
-      // Sauvegarde dans le localStorage
-      saveCompletedLesson(selectedLesson.id);
-      // Met à jour l'état local pour rafraîchir la sidebar
-      setCompletedLessons(getCompletedLessons());
+  function handleFinishQuiz(nextAction: "replay" | "next" | "menu") {
+    if (nextAction === "menu") {
+      setQuizFinished(false);
+      setQuizStarted(false);
+      setSelectedLesson(null);
+      return;
     }
-    setFinalProgress(progress);
-    setTotalQuestions(total);
-    setQuizStarted(false);
-    setQuizFinished(true);
-  }
+    
+    if (nextAction === "replay") {
+      setQuizFinished(false);
+      setQuizStarted(true);
+      return;
+    }
 
-  function handleBackHome() {
-    setQuizFinished(false);
-    setQuizStarted(false);
-    setSelectedLesson(null);
+    if (nextAction === "next" && selectedLesson) {
+      // Sauvegarde la leçon validée
+      saveCompletedLesson(selectedLesson.id);
+      setCompletedLessons(getCompletedLessons());
+      
+      // Cherche la prochaine leçon
+      const all = parts.flatMap(p => p.modules.flatMap(m => m.lessons));
+      const idx = all.findIndex(l => l.id === selectedLesson.id);
+      if (idx !== -1 && idx < all.length - 1) {
+        handleSelectLesson(all[idx + 1]);
+      } else {
+        // Si c'était la dernière leçon du module
+        setQuizFinished(false);
+        setSelectedLesson(null);
+      }
+    }
   }
 
   return (
@@ -72,27 +82,30 @@ export default function Home() {
       />
 
       {quizFinished && selectedLesson ? (
-        <QuizEnd
-          module={{ name: selectedLesson.title, logo: selectedModuleLogo } as any}
-          finalProgress={finalProgress}
-          starsEarned={0}
-          totalQuestions={totalQuestions}
-          onReplay={() => { setQuizFinished(false); setQuizStarted(true); }}
-          onBackHome={handleBackHome}
+        <LessonSummary
+          lesson={selectedLesson}
+          moduleLogo={selectedModuleLogo}
+          onReplay={() => handleFinishQuiz("replay")}
+          onNext={() => handleFinishQuiz("next")}
+          onBackToMenu={() => handleFinishQuiz("menu")}
         />
       ) : quizStarted && selectedLesson ? (
         <Quiz
           key={`${selectedLesson.id}-${Date.now()}`}
           lesson={selectedLesson}
-          onFinish={handleFinishQuiz}
-          onBackToMenu={handleBackHome}
+          moduleLogo={selectedModuleLogo}
+          onFinish={(action) => {
+            if (action === "menu") handleFinishQuiz("menu");
+            else if (action === "replay") handleFinishQuiz("replay");
+            else setQuizFinished(true); // Si le Quiz est réussi, on affiche le Bilan
+          }}
         />
       ) : selectedLesson ? (
         <LessonView
           lesson={selectedLesson}
           moduleLogo={selectedModuleLogo}
           onStart={() => setQuizStarted(true)}
-          onBack={handleBackHome}
+          onBack={() => handleFinishQuiz("menu")}
         />
       ) : (
         <Welcome onStart={() => setSidebarOpen(true)} />

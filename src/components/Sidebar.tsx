@@ -9,19 +9,13 @@ type SidebarProps = {
   onClose: () => void;
   onSelectLesson: (lesson: Lesson) => void;
   selectedLessonId?: string;
-  completedLessons: string[]; // NOUVEAU : Liste des leçons validées
+  completedLessons: string[];
 };
 
-export default function Sidebar({ 
-  isOpen, 
-  onClose, 
-  onSelectLesson, 
-  selectedLessonId, 
-  completedLessons 
-}: SidebarProps) {
+export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLessonId, completedLessons }: SidebarProps) {
   const [openParts, setOpenParts] = useState<Record<string, boolean>>({});
   const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
-  const [hoveredLesson, setHoveredLesson] = useState<string | null>(null);
+  const [activeLesson, setActiveLesson] = useState<string | null>(null); // Pour le clic sur mobile
   const [aProposOuvert, setAProposOuvert] = useState(false);
 
   const togglePart = (id: string) => setOpenParts(prev => ({ ...prev, [id]: !prev[id] }));
@@ -31,29 +25,21 @@ export default function Sidebar({
     <AnimatePresence>
       {isOpen && (
         <>
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            onClick={onClose} className="fixed inset-0 bg-black/50 z-40"
-          />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 bg-black/50 z-40" />
           <motion.aside
             initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 220 }}
             className="fixed top-0 left-0 h-screen w-1/2 md:w-1/3 bg-slate-900/95 backdrop-blur-xl border-r border-slate-700 z-50 p-4 overflow-y-auto flex flex-col"
           >
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">
-                DevOps Quiz
-              </h1>
+              <h1 className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">DevOps Quiz</h1>
               <button onClick={onClose} className="text-slate-400 hover:text-white text-xl w-8 h-8 rounded-full hover:bg-slate-800">✕</button>
             </div>
 
             <div className="flex-1">
               {parts.map(part => (
                 <div key={part.id} className="mb-4">
-                  <button
-                    onClick={() => togglePart(part.id)}
-                    className="w-full flex justify-between items-center px-3 py-2 rounded-lg bg-slate-800/60 text-left text-sm font-semibold text-cyan-300 hover:bg-slate-800 mb-2"
-                  >
+                  <button onClick={() => togglePart(part.id)} className="w-full flex justify-between items-center px-3 py-2 rounded-lg bg-slate-800/60 text-left text-sm font-semibold text-cyan-300 hover:bg-slate-800 mb-2">
                     <span>📘 {part.title}</span>
                     <motion.span animate={{ rotate: openParts[part.id] ? 0 : -90 }}>▾</motion.span>
                   </button>
@@ -63,14 +49,8 @@ export default function Sidebar({
                       <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden ml-2 space-y-1">
                         {part.modules.map(mod => (
                           <div key={mod.id} className="mb-2">
-                            <button
-                              onClick={() => toggleModule(mod.id)}
-                              className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-slate-800/80"
-                            >
-                              <span className="flex items-center gap-2">
-                                <img src={mod.logo} alt={mod.name} className="w-4 h-4 object-contain" />
-                                {mod.name}
-                              </span>
+                            <button onClick={() => toggleModule(mod.id)} className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-slate-800/80">
+                              <span className="flex items-center gap-2"><img src={mod.logo} alt={mod.name} className="w-4 h-4 object-contain" />{mod.name}</span>
                               <motion.span animate={{ rotate: openModules[mod.id] ? 0 : -90 }}>▾</motion.span>
                             </button>
 
@@ -84,30 +64,39 @@ export default function Sidebar({
                                     return (
                                       <li key={lesson.id} className="relative">
                                         <button
-                                          onClick={() => isUnlocked && onSelectLesson(lesson)}
-                                          onMouseEnter={() => setHoveredLesson(lesson.id)}
-                                          onMouseLeave={() => setHoveredLesson(null)}
+                                          onClick={() => {
+                                            if (!isUnlocked) {
+                                              alert("🔒 Termine d'abord la leçon précédente pour débloquer celle-ci !");
+                                              return;
+                                            }
+                                            if (activeLesson === lesson.id) {
+                                              setActiveLesson(null);
+                                              onSelectLesson(lesson);
+                                            } else {
+                                              setActiveLesson(lesson.id); // Affiche la description
+                                            }
+                                          }}
                                           disabled={!isUnlocked}
-                                          className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-all flex justify-between items-center ${
-                                            selectedLessonId === lesson.id
-                                              ? "bg-gradient-to-r from-cyan-500/30 to-green-500/30 text-white border-l-2 border-cyan-400"
-                                              : isUnlocked
-                                                ? "text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 cursor-pointer"
-                                                : "text-slate-600 cursor-not-allowed opacity-60"
+                                          className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-all flex flex-col ${
+                                            selectedLessonId === lesson.id ? "bg-gradient-to-r from-cyan-500/30 to-green-500/30 text-white border-l-2 border-cyan-400"
+                                            : isUnlocked ? "text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 cursor-pointer"
+                                            : "text-slate-600 cursor-not-allowed opacity-60"
                                           }`}
                                         >
-                                          <span>{lesson.title}</span>
-                                          <span>{isCompleted ? "✅" : isUnlocked ? "▶️" : "🔒"}</span>
+                                          <div className="flex justify-between items-center w-full">
+                                            <span>{lesson.title}</span>
+                                            <span>{isCompleted ? "✅" : isUnlocked ? "▶️" : "🔒"}</span>
+                                          </div>
+                                          
+                                          {/* Description au clic sur mobile */}
+                                          <AnimatePresence>
+                                            {activeLesson === lesson.id && isUnlocked && (
+                                              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-2 text-cyan-300 text-[10px] italic leading-tight">
+                                                {lesson.description}
+                                              </motion.div>
+                                            )}
+                                          </AnimatePresence>
                                         </button>
-                                        
-                                        {hoveredLesson === lesson.id && isUnlocked && !isCompleted && (
-                                          <motion.div 
-                                            initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                                            className="absolute left-full top-0 ml-2 w-48 p-2 bg-slate-800 text-xs text-slate-200 rounded shadow-lg z-50 border border-slate-600 pointer-events-none"
-                                          >
-                                            {lesson.description}
-                                          </motion.div>
-                                        )}
                                       </li>
                                     );
                                   })}
@@ -123,12 +112,9 @@ export default function Sidebar({
               ))}
             </div>
 
-            {/* Section À propos */}
+            {/* À propos */}
             <div className="mt-8 pt-4 border-t border-slate-800">
-              <button
-                onClick={() => setAProposOuvert(!aProposOuvert)}
-                className="w-full flex justify-between items-center px-3 py-2 rounded-lg bg-slate-800/60 text-left text-sm font-semibold text-cyan-300 hover:bg-slate-800 mb-2"
-              >
+              <button onClick={() => setAProposOuvert(!aProposOuvert)} className="w-full flex justify-between items-center px-3 py-2 rounded-lg bg-slate-800/60 text-left text-sm font-semibold text-cyan-300 hover:bg-slate-800 mb-2">
                 <span>ℹ️ À propos</span>
                 <motion.span animate={{ rotate: aProposOuvert ? 0 : -90 }}>▾</motion.span>
               </button>
