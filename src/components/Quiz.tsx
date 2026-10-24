@@ -8,11 +8,10 @@ import { getMessageCorrect, getMessageFaux } from "@/data/encouragements";
 type QuizProps = {
   lesson: Lesson;
   moduleLogo: string;
-  onFinish: (nextAction: "replay" | "next" | "menu") => void;
+  onFinish: (nextAction: "replay" | "next" | "menu" | "success") => void;
 };
 
 export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
-  // Mélange les questions au démarrage
   const [allQuestions] = useState<LessonQuestion[]>(() => {
     return shuffle(lesson.questions).map((q) => {
       return { ...q, options: shuffle(q.options) };
@@ -26,9 +25,7 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
   const [wrongQuestions, setWrongQuestions] = useState<LessonQuestion[]>([]);
   const [feedback, setFeedback] = useState<null | { correct: boolean; explanation: string; encouragement: string }>(null);
   const [selectedOption, setSelectedOption] = useState("");
-  
-  const [status, setStatus] = useState<"playing" | "gameover" | "success">("playing");
-  const [isLastQuestion, setIsLastQuestion] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const totalQuestions = allQuestions.length;
   const progress = Math.round(((totalQuestions - queue.length + (feedback ? 1 : 0)) / totalQuestions) * 100);
@@ -45,7 +42,7 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
 
     if (!correct) {
       setHearts((h) => h - 1);
-      // On sauvegarde la question ratée en mélangeant à nouveau les options
+      // On remélange les options pour la répétition
       const retryQ = { ...current, options: shuffle(current.options) };
       setWrongQuestions((prev) => [...prev, retryQ]);
     }
@@ -56,7 +53,7 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
     setSelectedOption("");
 
     if (hearts <= 0) {
-      setStatus("gameover");
+      setIsGameOver(true);
       return;
     }
 
@@ -65,7 +62,6 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
     if (rest.length > 0) {
       setQueue(rest);
       setCurrent(rest[0]);
-      if (rest.length === 1 && wrongQuestions.length === 0) setIsLastQuestion(true);
       return;
     }
 
@@ -77,11 +73,11 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
       return;
     }
 
-    // Si tout est fini et qu'on a encore des cœurs
-    setStatus("success");
+    // Si tout est fini et qu'on a encore des cœurs, on prévient page.tsx qu'on a réussi !
+    onFinish("success");
   }
 
-  if (status === "gameover") {
+  if (isGameOver) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
         <div className="text-6xl mb-4">💔</div>
@@ -92,11 +88,6 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
         </button>
       </div>
     );
-  }
-
-  if (status === "success") {
-    // Ici on devrait afficher le LessonSummary, mais on le gère dans page.tsx
-    return null; 
   }
 
   if (!current) return null;
@@ -171,7 +162,7 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
               </button>
             ) : (
               <button onClick={handleNext} className="mt-6 w-full py-3 rounded-lg font-bold bg-green-600 hover:bg-green-500 text-white">
-                {isLastQuestion ? "Terminer" : "Suivant →"}
+                Suivant →
               </button>
             )}
           </motion.div>

@@ -4,7 +4,7 @@ import Welcome from "@/components/Welcome";
 import Sidebar from "@/components/Sidebar";
 import LessonView from "@/components/LessonView";
 import Quiz from "@/components/Quiz";
-import LessonSummary from "@/components/LessonSummary"; // NOUVEAU
+import LessonSummary from "@/components/LessonSummary";
 import FloatingMenu from "@/components/FloatingMenu";
 import { Lesson, parts } from "@/data/parts";
 import { getCompletedLessons, saveCompletedLesson } from "@/utils/storage";
@@ -23,6 +23,7 @@ export default function Home() {
   }, []);
 
   function handleSelectLesson(lesson: Lesson) {
+    // Trouver le logo du module
     for (const part of parts) {
       for (const mod of part.modules) {
         if (mod.lessons.find(l => l.id === lesson.id)) {
@@ -33,38 +34,45 @@ export default function Home() {
     }
     setSelectedLesson(lesson);
     setSidebarOpen(false);
-    setQuizStarted(false);
-    setQuizFinished(false);
+    
+    // ⚠️ LA CORRECTION EST ICI : Si la leçon est déjà validée, on affiche le résumé directement
+    if (completedLessons.includes(lesson.id)) {
+      setQuizFinished(true);
+      setQuizStarted(false);
+    } else {
+      setQuizFinished(false);
+      setQuizStarted(false);
+    }
   }
 
-  function handleFinishQuiz(nextAction: "replay" | "next" | "menu") {
+  function handleFinishQuiz(nextAction: "replay" | "next" | "menu" | "success") {
+    if (!selectedLesson) return;
+
     if (nextAction === "menu") {
       setQuizFinished(false);
       setQuizStarted(false);
       setSelectedLesson(null);
-      return;
-    }
-    
-    if (nextAction === "replay") {
+    } 
+    else if (nextAction === "replay") {
       setQuizFinished(false);
       setQuizStarted(true);
-      return;
-    }
-
-    if (nextAction === "next" && selectedLesson) {
-      // Sauvegarde la leçon validée
+    } 
+    else if (nextAction === "success") {
+      // L'utilisateur a fini le quiz avec succès !
       saveCompletedLesson(selectedLesson.id);
       setCompletedLessons(getCompletedLessons());
+      setQuizStarted(false);
+      setQuizFinished(true); // Affiche le LessonSummary
+    } 
+    else if (nextAction === "next") {
+      // Passer à la leçon suivante depuis le LessonSummary
+      const allLessons = parts.flatMap(p => p.modules.flatMap(m => m.lessons));
+      const currentIndex = allLessons.findIndex(l => l.id === selectedLesson.id);
       
-      // Cherche la prochaine leçon
-      const all = parts.flatMap(p => p.modules.flatMap(m => m.lessons));
-      const idx = all.findIndex(l => l.id === selectedLesson.id);
-      if (idx !== -1 && idx < all.length - 1) {
-        handleSelectLesson(all[idx + 1]);
+      if (currentIndex !== -1 && currentIndex < allLessons.length - 1) {
+        handleSelectLesson(allLessons[currentIndex + 1]);
       } else {
-        // Si c'était la dernière leçon du module
-        setQuizFinished(false);
-        setSelectedLesson(null);
+        handleFinishQuiz("menu"); // Si c'était la dernière leçon
       }
     }
   }
@@ -94,11 +102,7 @@ export default function Home() {
           key={`${selectedLesson.id}-${Date.now()}`}
           lesson={selectedLesson}
           moduleLogo={selectedModuleLogo}
-          onFinish={(action) => {
-            if (action === "menu") handleFinishQuiz("menu");
-            else if (action === "replay") handleFinishQuiz("replay");
-            else setQuizFinished(true); // Si le Quiz est réussi, on affiche le Bilan
-          }}
+          onFinish={handleFinishQuiz}
         />
       ) : selectedLesson ? (
         <LessonView
