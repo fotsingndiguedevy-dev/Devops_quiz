@@ -11,7 +11,8 @@ type SidebarProps = {
 };
 
 export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLessonId }: SidebarProps) {
-  const [openParts, setOpenParts] = useState<Record<string, boolean>>({ "partie-1": true });
+  // ⚠️ MODIFICATION ICI : Tous les menus sont fermés par défaut
+  const [openParts, setOpenParts] = useState<Record<string, boolean>>({});
   const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
   const [hoveredLesson, setHoveredLesson] = useState<string | null>(null);
 
