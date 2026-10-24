@@ -2,22 +2,34 @@
 import { useState } from "react";
 import Welcome from "@/components/Welcome";
 import Sidebar from "@/components/Sidebar";
-import ModuleView from "@/components/ModuleView";
+import LessonView from "@/components/LessonView";
 import Quiz from "@/components/Quiz";
 import QuizEnd from "@/components/QuizEnd";
 import FloatingMenu from "@/components/FloatingMenu";
-import { Module } from "@/data/modules";
+import { Lesson, parts } from "@/data/parts";
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [selectedModule, setSelectedModule] = useState<Module | null>(null);
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [selectedModuleLogo, setSelectedModuleLogo] = useState<string>("");
+  
   const [quizStarted, setQuizStarted] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
   const [finalProgress, setFinalProgress] = useState(0);
   const [totalQuestions, setTotalQuestions] = useState(0);
 
-  function handleSelectModule(m: Module) {
-    setSelectedModule(m);
+  // Trouver le logo du module parent pour l'afficher dans la leçon
+  function handleSelectLesson(lesson: Lesson) {
+    // On cherche le module qui contient cette leçon pour récupérer son logo
+    for (const part of parts) {
+      for (const mod of part.modules) {
+        if (mod.lessons.find(l => l.id === lesson.id)) {
+          setSelectedModuleLogo(mod.logo);
+          break;
+        }
+      }
+    }
+    setSelectedLesson(lesson);
     setSidebarOpen(false);
     setQuizStarted(false);
     setQuizFinished(false);
@@ -30,15 +42,10 @@ export default function Home() {
     setQuizFinished(true);
   }
 
-  function handleReplay() {
-    setQuizFinished(false);
-    setQuizStarted(true);
-  }
-
   function handleBackHome() {
     setQuizFinished(false);
     setQuizStarted(false);
-    setSelectedModule(null);
+    setSelectedLesson(null);
   }
 
   return (
@@ -48,34 +55,32 @@ export default function Home() {
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
-        onSelectModule={handleSelectModule}
-        selectedModuleId={selectedModule?.id}
+        onSelectLesson={handleSelectLesson}
+        selectedLessonId={selectedLesson?.id}
       />
 
-      {quizFinished && selectedModule ? (
+      {quizFinished && selectedLesson ? (
         <QuizEnd
-          module={selectedModule}
+          module={{ name: selectedLesson.title, logo: selectedModuleLogo } as any}
           finalProgress={finalProgress}
           starsEarned={0}
           totalQuestions={totalQuestions}
-          onReplay={handleReplay}
+          onReplay={() => { setQuizFinished(false); setQuizStarted(true); }}
           onBackHome={handleBackHome}
         />
-      ) : quizStarted && selectedModule ? (
+      ) : quizStarted && selectedLesson ? (
         <Quiz
-          key={`${selectedModule.id}-${Date.now()}`}
-          module={selectedModule}
+          key={`${selectedLesson.id}-${Date.now()}`}
+          lesson={selectedLesson}
           onFinish={handleFinishQuiz}
           onBackToMenu={handleBackHome}
         />
-      ) : selectedModule ? (
-        <ModuleView
-          module={selectedModule}
+      ) : selectedLesson ? (
+        <LessonView
+          lesson={selectedLesson}
+          moduleLogo={selectedModuleLogo}
           onStart={() => setQuizStarted(true)}
-          onBack={() => {
-            setSelectedModule(null);
-            setQuizStarted(false);
-          }}
+          onBack={handleBackHome}
         />
       ) : (
         <Welcome onStart={() => setSidebarOpen(true)} />
