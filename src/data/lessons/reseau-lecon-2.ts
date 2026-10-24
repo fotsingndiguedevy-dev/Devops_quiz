@@ -1,0 +1,82 @@
+import { LessonQuestion } from "./reseau-lecon-1";
+
+export const reseauLecon2: LessonQuestion[] = [
+  {
+    id: "reseau-l2-q1",
+    type: "qcm",
+    question: "Combien de couches possède le modèle OSI, et dans quel ordre (de la couche 1 à 7) ?",
+    options: [
+      "4 couches : Application, Transport, Internet, Accès réseau",
+      "7 couches : Physique, Liaison, Réseau, Transport, Session, Présentation, Application",
+      "5 couches : Physique, Réseau, Transport, Session, Application",
+      "7 couches : Application, Présentation, Session, Transport, Réseau, Liaison, Physique",
+    ],
+    answer: "7 couches : Physique, Liaison, Réseau, Transport, Session, Présentation, Application",
+    explanation: "Le modèle OSI a 7 couches. De la 1 à la 7 : Physique, Liaison de données, Réseau, Transport, Session, Présentation, Application. (Moyen mnémotechnique : 'Pour Le Réseau Tout Se Passe Application').",
+    encouragement: "Tu maîtrises l'architecture ! 🏗️",
+  },
+  {
+    id: "reseau-l2-q2",
+    type: "qcm",
+    question: "Combien de couches possède le modèle TCP/IP ?",
+    options: ["7 couches", "4 couches", "5 couches", "3 couches"],
+    answer: "4 couches",
+    explanation: "Le modèle TCP/IP a 4 couches : Application, Transport, Internet et Accès réseau. C'est le modèle réellement utilisé sur Internet.",
+    encouragement: "Exact ! TCP/IP est plus compact. 📦",
+  },
+  {
+    id: "reseau-l2-q3",
+    type: "qcm",
+    question: "À quelle couche du modèle OSI appartient le protocole IP ?",
+    options: ["Couche 2 (Liaison)", "Couche 3 (Réseau)", "Couche 4 (Transport)", "Couche 7 (Application)"],
+    answer: "Couche 3 (Réseau)",
+    explanation: "IP (Internet Protocol) opère à la couche 3 (Réseau). C'est lui qui gère l'adressage logique et le routage des paquets.",
+    encouragement: "IP = Couche 3. Tu gères ! 🌐",
+  },
+  {
+    id: "reseau-l2-q4",
+    type: "qcm",
+    question: "À quelle couche du modèle OSI appartient le protocole TCP ?",
+    options: ["Couche 2 (Liaison)", "Couche 3 (Réseau)", "Couche 4 (Transport)", "Couche 7 (Application)"],
+    answer: "Couche 4 (Transport)",
+    explanation: "TCP opère à la couche 4 (Transport). Il assure la fiabilité, le séquencement et la connexion entre les applications.",
+    encouragement: "TCP = Couche 4. Parfait ! 🚚",
+  },
+  {
+    id: "reseau-l2-q5",
+    type: "qcm",
+    question: "À quelle couche du modèle OSI appartient le protocole HTTP ?",
+    options: ["Couche 2 (Liaison)", "Couche 4 (Transport)", "Couche 5 (Session)", "Couche 7 (Application)"],
+    answer: "Couche 7 (Application)",
+    explanation: "HTTP (et HTTPS) sont des protocoles de la couche 7 (Application). C'est la couche la plus proche de l'utilisateur (navigateur web).",
+    encouragement: "HTTP = Couche 7. Tu vois le web ! 🕸️",
+  },
+  {
+    id: "reseau-l2-q6",
+    type: "qcm",
+    question: "Qu'est-ce que l'encapsulation dans un réseau ?",
+    options: [
+      "C'est le fait de crypter les données",
+      "C'est le fait d'ajouter un en-tête à chaque couche traversée lors de l'envoi",
+      "C'est le fait de compresser un fichier",
+      "C'est le fait de bloquer un paquet",
+    ],
+    answer: "C'est le fait d'ajouter un en-tête à chaque couche traversée lors de l'envoi",
+    explanation: "Quand tu envoies des données, chaque couche (de la 7 à la 1) ajoute son propre en-tête (encapsulation). À la réception, chaque couche retire son en-tête (décapsulation).",
+    encouragement: "L'encapsulation n'a plus de secret ! 🎁",
+  },
+  {
+    id: "reseau-l2-q7",
+    type: "qcm",
+    question: "Pourquoi le modèle OSI est-il utile pour un DevOps lors d'un diagnostic ?",
+    options: [
+      "Il permet de coder plus vite",
+      "Il permet d'isoler un problème couche par couche pour trouver l'origine de la panne",
+      "Il permet de configurer le Wi-Fi automatiquement",
+      "Il n'est pas utile en diagnostic",
+    ],
+    answer: "Il permet d'isoler un problème couche par couche pour trouver l'origine de la panne",
+    explanation: "Si ton site web ne s'affiche pas, tu vérifies d'abord la couche 1 (câble), puis 2, puis 3 (ping), puis 4 (port), puis 7 (application). C'est la méthode de diagnostic réseau.",
+    encouragement: "Un vrai réflexe de DevOps ! 🔍",
+  }
+];

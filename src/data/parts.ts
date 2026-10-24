@@ -1,13 +1,12 @@
 import { reseauLecon1, LessonQuestion } from "./lessons/reseau-lecon-1";
-
-// ============================================================
-// TYPES DE DONNÉES POUR LA NOUVELLE ARCHITECTURE
-// ============================================================
+import { reseauLecon2 } from "./lessons/reseau-lecon-2";
+import { reseauLecon3 } from "./lessons/reseau-lecon-3";
+import { reseauLecon4 } from "./lessons/reseau-lecon-4";
 
 export type Lesson = {
   id: string;
   title: string;
-  description: string; // S'affiche au survol dans la sidebar
+  description: string;
   questions: LessonQuestion[];
 };
 
@@ -25,10 +24,6 @@ export type Part = {
   title: string;
   modules: Module[];
 };
-
-// ============================================================
-// STRUCTURE GLOBALE DU PROJET
-// ============================================================
 
 export const parts: Part[] = [
   {
@@ -48,20 +43,32 @@ export const parts: Part[] = [
             description: "Découvre ce qu'est un réseau, les types (LAN, WAN) et les topologies.",
             questions: reseauLecon1,
           },
-          // Les autres leçons du réseau viendront ici plus tard
+          {
+            id: "reseau-lecon-2",
+            title: "Leçon 2 — Modèle OSI et TCP/IP",
+            description: "Apprends les 7 couches du modèle OSI et les 4 couches de TCP/IP.",
+            questions: reseauLecon2,
+          },
+          {
+            id: "reseau-lecon-3",
+            title: "Leçon 3 — Équipements réseau",
+            description: "Switch, routeur, firewall, load balancer : comprends leur rôle.",
+            questions: reseauLecon3,
+          },
+          {
+            id: "reseau-lecon-4",
+            title: "Leçon 4 — MAC et Ethernet",
+            description: "Découvre l'adresse physique (MAC) et le protocole ARP.",
+            questions: reseauLecon4,
+          }
+          // Les prochaines leçons viendront ici
         ],
       },
-      // Les autres modules (Bash, Shell, Python, Git) viendront ici plus tard
+      // Les autres modules viendront ici
     ],
   },
-  // Les autres parties (Docker, CI/CD...) viendront ici plus tard
 ];
 
-// ============================================================
-// FONCTIONS UTILITAIRES
-// ============================================================
-
-/** Récupère une leçon spécifique par son ID */
 export function getLessonById(lessonId: string): Lesson | undefined {
   for (const part of parts) {
     for (const module of part.modules) {
