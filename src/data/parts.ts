@@ -89,8 +89,10 @@ export const parts: Part[] = [
             description: "Comprends les ports et la différence entre TCP (fiable) et UDP (rapide).",
             questions: reseauLecon8,
           }
+          // Les leçons 9 à 12 viendront ici
         ],
       },
+      // Les autres modules viendront ici
     ],
   },
 ];
