@@ -6,6 +6,10 @@ import { reseauLecon5 } from "./lessons/reseau-lecon-5";
 import { reseauLecon6 } from "./lessons/reseau-lecon-6";
 import { reseauLecon7 } from "./lessons/reseau-lecon-7";
 import { reseauLecon8 } from "./lessons/reseau-lecon-8";
+import { reseauLecon9 } from "./lessons/reseau-lecon-9";
+import { reseauLecon10 } from "./lessons/reseau-lecon-10";
+import { reseauLecon11 } from "./lessons/reseau-lecon-11";
+import { reseauLecon12 } from "./lessons/reseau-lecon-12";
 
 export type Lesson = {
   id: string;
@@ -88,8 +92,31 @@ export const parts: Part[] = [
             title: "Leçon 8 — TCP et UDP",
             description: "Comprends les ports et la différence entre TCP (fiable) et UDP (rapide).",
             questions: reseauLecon8,
+          },
+          {
+            id: "reseau-lecon-9",
+            title: "Leçon 9 — Services essentiels",
+            description: "Maîtrise DNS, DHCP, HTTP, SSH — les 4 services du quotidien DevOps.",
+            questions: reseauLecon9,
+          },
+          {
+            id: "reseau-lecon-10",
+            title: "Leçon 10 — Sécurité réseau",
+            description: "Chiffrement, TLS, Firewall, VPN et segmentation (VLAN).",
+            questions: reseauLecon10,
+          },
+          {
+            id: "reseau-lecon-11",
+            title: "Leçon 11 — Réseau cloud",
+            description: "VPC, sous-réseaux, Security Groups, Load Balancers et CDN.",
+            questions: reseauLecon11,
+          },
+          {
+            id: "reseau-lecon-12",
+            title: "Leçon 12 — Diagnostic",
+            description: "Apprends à diagnostiquer une panne couche par couche avec les bons outils.",
+            questions: reseauLecon12,
           }
-          // Les leçons 9 à 12 viendront ici
         ],
       },
       // Les autres modules viendront ici
