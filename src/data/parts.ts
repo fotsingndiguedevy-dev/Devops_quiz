@@ -1,26 +1,14 @@
-import { reseauLecon1, LessonQuestion } from "./lessons/reseau-lecon-1";
-import { reseauLecon2 } from "./lessons/reseau-lecon-2";
-import { reseauLecon3 } from "./lessons/reseau-lecon-3";
-import { reseauLecon4 } from "./lessons/reseau-lecon-4";
-import { reseauLecon5 } from "./lessons/reseau-lecon-5";
-import { reseauLecon6 } from "./lessons/reseau-lecon-6";
-import { reseauLecon7 } from "./lessons/reseau-lecon-7";
-import { reseauLecon8 } from "./lessons/reseau-lecon-8";
-import { reseauLecon9 } from "./lessons/reseau-lecon-9";
-import { reseauLecon10 } from "./lessons/reseau-lecon-10";
-import { reseauLecon11 } from "./lessons/reseau-lecon-11";
-import { reseauLecon12 } from "./lessons/reseau-lecon-12";
+import { LessonQuestion } from "./lessons/reseau"; // On prend le type ici
+import {
+  reseauLecon1, reseauLecon2, reseauLecon3, reseauLecon4,
+  reseauLecon5, reseauLecon6, reseauLecon7, reseauLecon8,
+  reseauLecon9, reseauLecon10, reseauLecon11, reseauLecon12
+} from "./lessons/reseau";
 
-import { bashLecon1 } from "./lessons/bash-lecon-1";
-import { bashLecon2 } from "./lessons/bash-lecon-2";
-import { bashLecon3 } from "./lessons/bash-lecon-3";
-import { bashLecon4 } from "./lessons/bash-lecon-4";
-import { bashLecon5 } from "./lessons/bash-lecon-5";
-import { bashLecon6 } from "./lessons/bash-lecon-6";
-import { bashLecon7 } from "./lessons/bash-lecon-7";
-import { bashLecon8 } from "./lessons/bash-lecon-8";
-import { bashLecon9 } from "./lessons/bash-lecon-9";
-import { bashLecon10 } from "./lessons/bash-lecon-10";
+import {
+  bashLecon1, bashLecon2, bashLecon3, bashLecon4, bashLecon5,
+  bashLecon6, bashLecon7, bashLecon8, bashLecon9, bashLecon10
+} from "./lessons/bash";
 
 export type Lesson = {
   id: string;
