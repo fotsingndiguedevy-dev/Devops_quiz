@@ -42,7 +42,6 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
 
     if (!correct) {
       setHearts((h) => h - 1);
-      // On remélange les options pour la répétition
       const retryQ = { ...current, options: shuffle(current.options) };
       setWrongQuestions((prev) => [...prev, retryQ]);
     }
@@ -65,7 +64,6 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
       return;
     }
 
-    // Si la file est vide mais qu'il y a des questions ratées
     if (wrongQuestions.length > 0) {
       setQueue(wrongQuestions);
       setCurrent(wrongQuestions[0]);
@@ -73,7 +71,6 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
       return;
     }
 
-    // Si tout est fini et qu'on a encore des cœurs, on prévient page.tsx qu'on a réussi !
     onFinish("success");
   }
 
@@ -94,7 +91,8 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-8">
-      <div className="max-w-2xl w-full">
+      {/* On ajoute overflow-hidden et w-full pour bloquer le débordement global */}
+      <div className="max-w-2xl w-full overflow-hidden">
         <div className="flex items-center gap-4 mb-6">
           <button onClick={() => onFinish("menu")} className="text-slate-400 hover:text-white text-xl">🏠</button>
           <div className="flex-1 h-3 bg-slate-800 rounded-full overflow-hidden">
@@ -116,14 +114,17 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
           <motion.div key={current.id} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             
             {current.definition && (
-              <div className="mb-6 p-4 rounded-lg bg-cyan-500/10 border border-cyan-400/40">
+              <div className="mb-6 p-4 rounded-lg bg-cyan-500/10 border border-cyan-400/40 break-words">
                 <p className="text-cyan-300 text-xs uppercase font-bold mb-2">📖 Définition</p>
                 <p className="text-white text-lg italic">« {current.definition} »</p>
               </div>
             )}
-            {current.question && <h2 className="text-xl font-bold text-white mb-4">{current.question}</h2>}
+            {/* Ajout de break-words pour forcer le retour à la ligne */}
+            {current.question && <h2 className="text-xl font-bold text-white mb-4 break-words">{current.question}</h2>}
             {current.codeSnippet && (
-              <pre className="bg-slate-950 border border-red-500/50 text-red-300 p-3 rounded-lg text-sm mb-4">{current.codeSnippet}</pre>
+              <pre className="bg-slate-950 border border-red-500/50 text-red-300 p-3 rounded-lg text-sm mb-4 overflow-x-auto whitespace-pre-wrap break-words">
+                {current.codeSnippet}
+              </pre>
             )}
 
             <div className="space-y-3">
@@ -135,7 +136,7 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
                 return (
                   <button
                     key={opt} disabled={!!feedback} onClick={() => setSelectedOption(opt)}
-                    className={`w-full text-left p-3 rounded-lg border transition-all ${
+                    className={`w-full text-left p-3 rounded-lg border transition-all break-words ${
                       showCorrect ? "bg-green-500/20 border-green-400 text-white"
                       : showWrong ? "bg-red-500/20 border-red-400 text-white"
                       : isSelected ? "bg-cyan-500/20 border-cyan-400 text-white"
@@ -149,7 +150,7 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
             </div>
 
             {feedback && (
-              <div className={`mt-6 p-4 rounded-lg border ${feedback.correct ? "bg-green-500/10 border-green-400/50" : "bg-red-500/10 border-red-400/50"}`}>
+              <div className={`mt-6 p-4 rounded-lg border break-words ${feedback.correct ? "bg-green-500/10 border-green-400/50" : "bg-red-500/10 border-red-400/50"}`}>
                 <p className="font-bold mb-2">{feedback.correct ? "✅ Bravo !" : "❌ Raté !"}</p>
                 <p className="text-slate-300 text-sm mb-2">{feedback.explanation}</p>
                 <p className="text-cyan-300 text-sm italic">{feedback.encouragement}</p>
