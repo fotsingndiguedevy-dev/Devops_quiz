@@ -1,4 +1,4 @@
-import { LessonQuestion } from "./lessons/reseau"; // On prend le type ici
+import { LessonQuestion } from "./lessons/reseau";
 import {
   reseauLecon1, reseauLecon2, reseauLecon3, reseauLecon4,
   reseauLecon5, reseauLecon6, reseauLecon7, reseauLecon8,
