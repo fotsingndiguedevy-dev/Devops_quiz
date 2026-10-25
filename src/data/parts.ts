@@ -14,6 +14,10 @@ import { reseauLecon12 } from "./lessons/reseau-lecon-12";
 import { bashLecon1 } from "./lessons/bash-lecon-1";
 import { bashLecon2 } from "./lessons/bash-lecon-2";
 import { bashLecon3 } from "./lessons/bash-lecon-3";
+import { bashLecon4 } from "./lessons/bash-lecon-4";
+import { bashLecon5 } from "./lessons/bash-lecon-5";
+import { bashLecon6 } from "./lessons/bash-lecon-6";
+import { bashLecon7 } from "./lessons/bash-lecon-7";
 
 export type Lesson = {
   id: string;
@@ -73,6 +77,10 @@ export const parts: Part[] = [
           { id: "bash-lecon-1", title: "Leçon 1 — Navigation", description: "Apprends à te déplacer dans les dossiers avec pwd, ls et cd.", questions: bashLecon1 },
           { id: "bash-lecon-2", title: "Leçon 2 — Gestion des fichiers", description: "Créer, copier, déplacer et supprimer des fichiers et dossiers.", questions: bashLecon2 },
           { id: "bash-lecon-3", title: "Leçon 3 — Lire et écrire du texte", description: "Afficher le contenu des fichiers et rediriger du texte.", questions: bashLecon3 },
+          { id: "bash-lecon-4", title: "Leçon 4 — Rechercher (grep, find)", description: "Trouver du texte dans les fichiers ou retrouver des fichiers perdus.", questions: bashLecon4 },
+          { id: "bash-lecon-5", title: "Leçon 5 — Redirections et Pipes", description: "Maîtrise les symboles >, >>, | pour connecter les commandes entre elles.", questions: bashLecon5 },
+          { id: "bash-lecon-6", title: "Leçon 6 — Permissions", description: "Comprends les droits rwx, chmod et chown pour sécuriser tes fichiers.", questions: bashLecon6 },
+          { id: "bash-lecon-7", title: "Leçon 7 — Processus", description: "Voir, gérer et tuer les processus avec ps, top, kill et les jobs.", questions: bashLecon7 },
         ],
       },
     ],
