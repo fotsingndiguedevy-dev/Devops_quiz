@@ -1,14 +1,9 @@
 import { LessonQuestion } from "./lessons/reseau";
-import {
-  reseauLecon1, reseauLecon2, reseauLecon3, reseauLecon4,
-  reseauLecon5, reseauLecon6, reseauLecon7, reseauLecon8,
-  reseauLecon9, reseauLecon10, reseauLecon11, reseauLecon12
-} from "./lessons/reseau";
-
-import {
-  bashLecon1, bashLecon2, bashLecon3, bashLecon4, bashLecon5,
-  bashLecon6, bashLecon7, bashLecon8, bashLecon9, bashLecon10
-} from "./lessons/bash";
+import { reseauLecon1, reseauLecon2, reseauLecon3, reseauLecon4, reseauLecon5, reseauLecon6, reseauLecon7, reseauLecon8, reseauLecon9, reseauLecon10, reseauLecon11, reseauLecon12 } from "./lessons/reseau";
+import { bashLecon1, bashLecon2, bashLecon3, bashLecon4, bashLecon5, bashLecon6, bashLecon7, bashLecon8, bashLecon9, bashLecon10 } from "./lessons/bash";
+import { shellLecon1, shellLecon2, shellLecon3, shellLecon4, shellLecon5 } from "./lessons/shell";
+import { pythonLecon1, pythonLecon2, pythonLecon3, pythonLecon4, pythonLecon5 } from "./lessons/python";
+import { gitLecon1, gitLecon2, gitLecon3, gitLecon4, gitLecon5 } from "./lessons/git";
 
 export type Lesson = {
   id: string;
@@ -75,6 +70,48 @@ export const parts: Part[] = [
           { id: "bash-lecon-8", title: "Leçon 8 — Variables d'environnement", description: "Maîtrise le PATH, l'export et la configuration du terminal.", questions: bashLecon8 },
           { id: "bash-lecon-9", title: "Leçon 9 — Scripting Bash", description: "Crée des scripts avec shebang, conditions, boucles et arguments.", questions: bashLecon9 },
           { id: "bash-lecon-10", title: "Leçon 10 — Gestion de paquets", description: "Installe, mets à jour et supprime des logiciels avec apt et dpkg.", questions: bashLecon10 },
+        ],
+      },
+      {
+        id: "shell",
+        name: "Shell",
+        logo: "https://cdn.simpleicons.org/iterm2/06b6d4", // 👈 Mis à jour ici
+        color: "from-teal-400 to-cyan-500",
+        tagline: "Automatiser avec des scripts shell",
+        lessons: [
+          { id: "shell-lecon-1", title: "Leçon 1 — Scripts et exécution", description: "Shebang, chmod +x, commentaires et codes de retour.", questions: shellLecon1 },
+          { id: "shell-lecon-2", title: "Leçon 2 — Variables", description: "Déclarer, utiliser, exporter et manipuler les variables en Shell.", questions: shellLecon2 },
+          { id: "shell-lecon-3", title: "Leçon 3 — Conditions", description: "If, elif, else et tests de fichiers en Shell.", questions: shellLecon3 },
+          { id: "shell-lecon-4", title: "Leçon 4 — Boucles", description: "For, while et contrôle des boucles pour automatiser.", questions: shellLecon4 },
+          { id: "shell-lecon-5", title: "Leçon 5 — Fonctions", description: "Créer et appeler des fonctions, arguments et sourcing.", questions: shellLecon5 },
+        ],
+      },
+      {
+        id: "python",
+        name: "Python",
+        logo: "https://cdn.simpleicons.org/python",
+        color: "from-teal-400 to-green-500",
+        tagline: "Automatiser le monde avec élégance",
+        lessons: [
+          { id: "python-lecon-1", title: "Leçon 1 — Introduction à Python", description: "Print, commentaires, imports et types de base.", questions: pythonLecon1 },
+          { id: "python-lecon-2", title: "Leçon 2 — Variables et types", description: "Int, float, str, bool et conversion de types.", questions: pythonLecon2 },
+          { id: "python-lecon-3", title: "Leçon 3 — Conditions", description: "If, elif, else, indentation et opérateurs logiques.", questions: pythonLecon3 },
+          { id: "python-lecon-4", title: "Leçon 4 — Boucles", description: "For, while, range, break et continue.", questions: pythonLecon4 },
+          { id: "python-lecon-5", title: "Leçon 5 — Fonctions", description: "Définition, arguments, return, lambda et docstrings.", questions: pythonLecon5 },
+        ],
+      },
+      {
+        id: "git",
+        name: "Git",
+        logo: "https://cdn.simpleicons.org/git",
+        color: "from-green-400 to-emerald-500",
+        tagline: "Sauvegarder ton code comme un chef",
+        lessons: [
+          { id: "git-lecon-1", title: "Leçon 1 — Bases de Git", description: "Init, status, add, commit et log.", questions: gitLecon1 },
+          { id: "git-lecon-2", title: "Leçon 2 — Branches", description: "Créer, changer, fusionner et supprimer des branches.", questions: gitLecon2 },
+          { id: "git-lecon-3", title: "Leçon 3 — Remote", description: "Travailler avec des dépôts distants (GitHub).", questions: gitLecon3 },
+          { id: "git-lecon-4", title: "Leçon 4 — Conflits et historique", description: "Résoudre les conflits, stash, diff et log graphique.", questions: gitLecon4 },
+          { id: "git-lecon-5", title: "Leçon 5 — Workflow GitHub", description: "Pull Requests, fork, README et bonnes pratiques.", questions: gitLecon5 },
         ],
       },
     ],
