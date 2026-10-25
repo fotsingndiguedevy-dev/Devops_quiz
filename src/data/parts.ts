@@ -18,6 +18,9 @@ import { bashLecon4 } from "./lessons/bash-lecon-4";
 import { bashLecon5 } from "./lessons/bash-lecon-5";
 import { bashLecon6 } from "./lessons/bash-lecon-6";
 import { bashLecon7 } from "./lessons/bash-lecon-7";
+import { bashLecon8 } from "./lessons/bash-lecon-8";
+import { bashLecon9 } from "./lessons/bash-lecon-9";
+import { bashLecon10 } from "./lessons/bash-lecon-10";
 
 export type Lesson = {
   id: string;
@@ -81,6 +84,9 @@ export const parts: Part[] = [
           { id: "bash-lecon-5", title: "Leçon 5 — Redirections et Pipes", description: "Maîtrise les symboles >, >>, | pour connecter les commandes entre elles.", questions: bashLecon5 },
           { id: "bash-lecon-6", title: "Leçon 6 — Permissions", description: "Comprends les droits rwx, chmod et chown pour sécuriser tes fichiers.", questions: bashLecon6 },
           { id: "bash-lecon-7", title: "Leçon 7 — Processus", description: "Voir, gérer et tuer les processus avec ps, top, kill et les jobs.", questions: bashLecon7 },
+          { id: "bash-lecon-8", title: "Leçon 8 — Variables d'environnement", description: "Maîtrise le PATH, l'export et la configuration du terminal.", questions: bashLecon8 },
+          { id: "bash-lecon-9", title: "Leçon 9 — Scripting Bash", description: "Crée des scripts avec shebang, conditions, boucles et arguments.", questions: bashLecon9 },
+          { id: "bash-lecon-10", title: "Leçon 10 — Gestion de paquets", description: "Installe, mets à jour et supprime des logiciels avec apt et dpkg.", questions: bashLecon10 },
         ],
       },
     ],
