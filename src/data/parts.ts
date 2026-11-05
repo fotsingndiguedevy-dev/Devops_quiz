@@ -1,4 +1,5 @@
 import { LessonQuestion } from "./lessons/reseau";
+export type { LessonQuestion };
 import { reseauLecon1, reseauLecon2, reseauLecon3, reseauLecon4, reseauLecon5, reseauLecon6, reseauLecon7, reseauLecon8, reseauLecon9, reseauLecon10, reseauLecon11, reseauLecon12 } from "./lessons/reseau";
 import { bashLecon1, bashLecon2, bashLecon3, bashLecon4, bashLecon5, bashLecon6, bashLecon7, bashLecon8, bashLecon9, bashLecon10 } from "./lessons/bash";
 import { shellLecon1, shellLecon2, shellLecon3, shellLecon4, shellLecon5, shellLecon6, shellLecon7 } from "./lessons/shell";
