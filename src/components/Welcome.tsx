@@ -1,5 +1,4 @@
 "use client";
-import { motion } from "framer-motion";
 
 type WelcomeProps = {
   onStart: () => void;
@@ -7,17 +6,19 @@ type WelcomeProps = {
 
 export default function Welcome({ onStart }: WelcomeProps) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 text-center">
-      <div className="max-w-2xl w-full">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 text-center w-full overflow-hidden">
+      <div className="max-w-2xl w-full flex flex-col items-center">
         <div className="text-6xl mb-4">🎮</div>
+        
         <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-green-400 to-emerald-400 bg-clip-text text-transparent">
           DevOps Quiz
         </h1>
+        
         <p className="text-xl text-cyan-300 font-medium mb-8">
           Apprends les bases du DevOps en jouant ✨
         </p>
 
-        <div className="space-y-4 text-slate-300 text-left bg-slate-800/40 rounded-2xl p-6 border border-slate-700/50 mb-8">
+        <div className="space-y-4 text-slate-300 text-left bg-slate-800/40 rounded-2xl p-4 md:p-6 border border-slate-700/50 mb-8 w-full break-words">
           <p>
             🚀 <strong className="text-white">DevOps Quiz</strong> est un jeu
             interactif qui te fait découvrir le monde du DevOps,{" "}
@@ -45,19 +46,12 @@ export default function Welcome({ onStart }: WelcomeProps) {
           </p>
         </div>
 
-        <motion.button
+        <button
           onClick={onStart}
-          whileHover={{
-            scale: 1.05,
-            boxShadow:
-              "0 0 35px rgba(34, 211, 238, 0.8), 0 0 60px rgba(34, 197, 94, 0.5)",
-          }}
-          whileTap={{ scale: 0.95 }}
-          transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          className="w-full md:w-auto px-8 py-4 rounded-xl font-bold text-lg text-white bg-cyan-600 bg-gradient-to-r from-cyan-500 to-green-500 shadow-lg shadow-cyan-500/30 cursor-pointer"
+          className="w-full md:w-auto px-8 py-4 rounded-xl font-bold text-lg text-white bg-cyan-600 bg-gradient-to-r from-cyan-500 to-green-500 shadow-lg shadow-cyan-500/30 transition-transform hover:scale-105 active:scale-95"
         >
           Commençons ! 🚀
-        </motion.button>
+        </button>
       </div>
     </div>
   );

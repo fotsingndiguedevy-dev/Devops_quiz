@@ -11,4 +11,8 @@ body {
   color: var(--foreground);
   font-family: system-ui, -apple-system, sans-serif;
   min-height: 100vh;
+  /* AJOUT POUR SAFARI */
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
