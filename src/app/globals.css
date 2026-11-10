@@ -14,7 +14,6 @@ body {
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden;
-  /* Fix Safari : empêche le rebond et le décalage */
-  position: relative;
-  -webkit-overflow-scrolling: touch;
+  /* Empêche Safari de faire un zoom chelou */
+  touch-action: pan-y; 
 }
