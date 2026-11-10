@@ -50,7 +50,7 @@ export default function Welcome({ onStart }: WelcomeProps) {
           type="button"
           onClick={onStart}
           style={{ background: 'linear-gradient(to right, #06b6d4, #22c55e)' }}
-          className="relative z-50 w-full md:w-auto px-8 py-4 rounded-xl font-bold text-lg text-white shadow-lg shadow-cyan-500/30 active:opacity-80 cursor-pointer"
+          className="w-full md:w-auto px-8 py-4 rounded-xl font-bold text-lg text-white shadow-lg shadow-cyan-500/30 active:opacity-80 cursor-pointer"
         >
           Commençons ! 🚀
         </button>
