@@ -18,7 +18,7 @@ export default function FloatingMenu({ onClick }: FloatingMenuProps) {
       }}
       whileTap={{ scale: 0.95 }}
       aria-label="Ouvrir le menu"
-      className="fixed top-4 left-4 z-30 w-12 h-12 rounded-full bg-slate-800/80 backdrop-blur-md border border-cyan-500/40 text-white text-xl flex items-center justify-center cursor-pointer shadow-lg"
+      className="fixed top-4 left-4 z-50 w-12 h-12 rounded-full bg-slate-800 border-2 border-cyan-500/50 text-white text-xl flex items-center justify-center cursor-pointer shadow-xl"
     >
       ☰
     </motion.button>

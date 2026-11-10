@@ -8,7 +8,7 @@ type WelcomeProps = {
 export default function Welcome({ onStart }: WelcomeProps) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 text-center">
-      <div className="max-w-2xl">
+      <div className="max-w-2xl w-full">
         <div className="text-6xl mb-4">🎮</div>
         <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-400 via-green-400 to-emerald-400 bg-clip-text text-transparent">
           DevOps Quiz
@@ -54,7 +54,7 @@ export default function Welcome({ onStart }: WelcomeProps) {
           }}
           whileTap={{ scale: 0.95 }}
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          className="px-8 py-4 rounded-xl font-bold text-lg text-white bg-gradient-to-r from-cyan-500 to-green-500 shadow-lg shadow-cyan-500/30 cursor-pointer"
+          className="w-full md:w-auto px-8 py-4 rounded-xl font-bold text-lg text-white bg-cyan-600 bg-gradient-to-r from-cyan-500 to-green-500 shadow-lg shadow-cyan-500/30 cursor-pointer"
         >
           Commençons ! 🚀
         </motion.button>
