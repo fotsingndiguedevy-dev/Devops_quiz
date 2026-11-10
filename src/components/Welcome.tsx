@@ -47,8 +47,10 @@ export default function Welcome({ onStart }: WelcomeProps) {
         </div>
 
         <button
+          type="button"
           onClick={onStart}
-          className="w-full md:w-auto px-8 py-4 rounded-xl font-bold text-lg text-white bg-cyan-600 bg-gradient-to-r from-cyan-500 to-green-500 shadow-lg shadow-cyan-500/30 transition-transform hover:scale-105 active:scale-95"
+          style={{ background: 'linear-gradient(to right, #06b6d4, #22c55e)' }}
+          className="relative z-50 w-full md:w-auto px-8 py-4 rounded-xl font-bold text-lg text-white shadow-lg shadow-cyan-500/30 active:opacity-80 cursor-pointer"
         >
           Commençons ! 🚀
         </button>
