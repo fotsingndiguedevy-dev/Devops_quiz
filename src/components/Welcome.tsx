@@ -1,4 +1,5 @@
 "use client";
+import { motion } from "framer-motion";
 
 type WelcomeProps = {
   onStart: () => void;
@@ -6,7 +7,7 @@ type WelcomeProps = {
 
 export default function Welcome({ onStart }: WelcomeProps) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 text-center w-full overflow-hidden">
+    <div className="min-h-screen w-full max-w-[100vw] flex flex-col items-center justify-center px-4 py-12 text-center overflow-hidden relative z-10">
       <div className="max-w-2xl w-full flex flex-col items-center">
         <div className="text-6xl mb-4">🎮</div>
         
@@ -46,14 +47,17 @@ export default function Welcome({ onStart }: WelcomeProps) {
           </p>
         </div>
 
-        <button
-          type="button"
+        {/* LE BOUTON MAGIQUE POUR SAFARI */}
+        <motion.button
           onClick={onStart}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 400, damping: 17 }}
           style={{ background: 'linear-gradient(to right, #06b6d4, #22c55e)' }}
-          className="w-full md:w-auto px-8 py-4 rounded-xl font-bold text-lg text-white shadow-lg shadow-cyan-500/30 active:opacity-80 cursor-pointer"
+          className="w-full md:w-auto px-8 py-4 rounded-xl font-bold text-lg text-white shadow-lg shadow-cyan-500/30 cursor-pointer relative z-50"
         >
           Commençons ! 🚀
-        </button>
+        </motion.button>
       </div>
     </div>
   );
