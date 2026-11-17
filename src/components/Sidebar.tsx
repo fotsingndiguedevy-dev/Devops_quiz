@@ -122,6 +122,7 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLesso
               ))}
             </div>
 
+            {/* SECTION À PROPOS MODIFIÉE (FEEDBACK AU LIEU DE PORTFOLIO) */}
             <div className="mt-8 pt-4 border-t border-slate-800">
               <button
                 onClick={() => setAProposOuvert(!aProposOuvert)}
@@ -133,10 +134,20 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLesso
               <AnimatePresence>
                 {aProposOuvert && (
                   <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                    <div className="text-xs text-slate-400 space-y-2 px-3 py-2 bg-slate-800/30 rounded-lg border border-slate-700/50">
+                    <div className="text-xs text-slate-400 space-y-3 px-3 py-3 bg-slate-800/30 rounded-lg border border-slate-700/50">
                       <p className="text-slate-300 font-medium">🚀 Pourquoi DevOps Quiz ?</p>
                       <p>Né d'un constat simple : apprendre le DevOps peut être intimidant. Ce jeu rend l'apprentissage accessible et sans pression.</p>
-                      <a href="https://portfolio-fotsingndiguedevy-dev.vercel.app" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 block pt-2">🌐 Mon portfolio</a>
+                      <p>💡 Projet développé depuis Termux sur Android.</p>
+                      
+                      <div className="pt-2 border-t border-slate-700/50">
+                        <p className="mb-2">Une remarque ? Un bug ? Une idée ?</p>
+                        <a 
+                          href="mailto:fotsingndiguedevy@gmail.com?subject=Feedback%20DevOps%20Quiz" 
+                          className="inline-block bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded transition-colors text-center w-full"
+                        >
+                          💬 Envoyer un feedback
+                        </a>
+                      </div>
                     </div>
                   </motion.div>
                 )}
