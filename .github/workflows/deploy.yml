@@ -17,7 +17,11 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd ~/Devops_quiz
-            git pull origin main
+            # On force le serveur à ignorer les modifs locales et à prendre ce qu'il y a sur GitHub
+            git fetch origin main
+            git reset --hard origin/main
+            # On supprime l'ancien build pour être sûr de recompiler
+            rm -rf .next
             npm install
             npm run build
             pm2 restart devops-quiz
