@@ -18,12 +18,13 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, onStartRevisi
   const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
   const [hoveredLesson, setHoveredLesson] = useState<string | null>(null);
   const [aProposOuvert, setAProposOuvert] = useState(false);
-  const [wrongCount, setWrongCount] = useState(0);
+  const [debugOpen, setDebugOpen] = useState(false);
+  const [wrongList, setWrongList] = useState<string[]>([]);
 
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
-      setWrongCount(getWrongQuestions().length);
+      setWrongList(getWrongQuestions()); // On lit à chaque ouverture
     } else {
       document.body.style.overflow = "unset";
     }
@@ -36,7 +37,7 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, onStartRevisi
   const handleClearErrors = () => {
     if(confirm("Voulez-vous vraiment effacer toutes les questions ratées ?")) {
       clearWrongQuestions();
-      setWrongCount(0);
+      setWrongList([]);
     }
   }
 
@@ -60,20 +61,41 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, onStartRevisi
               <button onClick={onClose} className="text-slate-400 hover:text-white text-xl w-8 h-8 rounded-full hover:bg-slate-800">✕</button>
             </div>
 
-            {/* BOUTON DE REVISION */}
-            {wrongCount > 0 && (
-              <div className="mb-4 bg-slate-800/60 p-3 rounded-lg border border-red-500/30">
-                <p className="text-sm text-slate-300 mb-2">Tu as {wrongCount} question(s) ratée(s).</p>
-                <div className="flex gap-2">
-                  <button onClick={onStartRevision} className="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white text-xs py-2 rounded font-bold">
-                    🔄 Réviser
-                  </button>
-                  <button onClick={handleClearErrors} className="bg-slate-700 hover:bg-slate-600 text-white text-xs py-2 px-3 rounded">
-                    🗑️
-                  </button>
-                </div>
+            {/* BOUTON DE REVISION (Toujours visible pour test) */}
+            <div className="mb-4 bg-slate-800/60 p-3 rounded-lg border border-cyan-500/30">
+              <p className="text-sm text-slate-300 mb-2 font-bold">Mode Révision</p>
+              <p className="text-xs text-slate-400 mb-2">Questions ratées en mémoire : <span className="text-cyan-300 font-bold">{wrongList.length}</span></p>
+              
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => {
+                    if (wrongList.length === 0) {
+                      alert("Aucune erreur enregistrée. Rate une question et quitte le quiz immédiatement !");
+                      return;
+                    }
+                    onStartRevision();
+                  }} 
+                  className="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white text-xs py-2 rounded font-bold"
+                >
+                  🔄 Réviser
+                </button>
+                <button onClick={handleClearErrors} className="bg-slate-700 hover:bg-slate-600 text-white text-xs py-2 px-3 rounded">
+                  🗑️
+                </button>
               </div>
-            )}
+
+              {/* MODE DEBUG */}
+              <div className="mt-3 pt-3 border-t border-slate-700">
+                <button onClick={() => setDebugOpen(!debugOpen)} className="text-xs text-slate-500 hover:text-slate-300">
+                  🐛 Debug (Voir les IDs)
+                </button>
+                {debugOpen && (
+                  <pre className="text-[10px] text-green-400 bg-black/50 p-2 rounded mt-2 break-all">
+                    {wrongList.length > 0 ? JSON.stringify(wrongList) : "[]"}
+                  </pre>
+                )}
+              </div>
+            </div>
 
             <div className="flex-1">
               {parts.map(part => (
