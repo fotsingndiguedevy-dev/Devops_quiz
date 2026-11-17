@@ -15,12 +15,12 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          script_stop: true # <-- Ajouté pour arrêter si une commande échoue
           script: |
+            set -e # <-- La ligne magique
             cd ~/Devops_quiz
-            # On force le serveur à ignorer les modifs locales et à prendre ce qu'il y a sur GitHub
             git fetch origin main
             git reset --hard origin/main
-            # On supprime l'ancien build pour être sûr de recompiler
             rm -rf .next
             npm install
             npm run build
