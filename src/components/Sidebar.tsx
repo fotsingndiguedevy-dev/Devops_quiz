@@ -2,36 +2,43 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { parts, Lesson } from "@/data/parts";
-import { isLessonUnlocked } from "@/utils/storage";
+import { isLessonUnlocked, getWrongQuestions, clearWrongQuestions } from "@/utils/storage";
 
 type SidebarProps = {
   isOpen: boolean;
   onClose: () => void;
   onSelectLesson: (lesson: Lesson) => void;
+  onStartRevision: () => void;
   selectedLessonId?: string;
   completedLessons: string[];
 };
 
-export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLessonId, completedLessons }: SidebarProps) {
+export default function Sidebar({ isOpen, onClose, onSelectLesson, onStartRevision, selectedLessonId, completedLessons }: SidebarProps) {
   const [openParts, setOpenParts] = useState<Record<string, boolean>>({});
   const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
   const [hoveredLesson, setHoveredLesson] = useState<string | null>(null);
   const [aProposOuvert, setAProposOuvert] = useState(false);
+  const [wrongCount, setWrongCount] = useState(0);
 
-  // Bloque le scroll de la page principale quand la sidebar est ouverte
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
+      setWrongCount(getWrongQuestions().length);
     } else {
       document.body.style.overflow = "unset";
     }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
+    return () => { document.body.style.overflow = "unset"; };
   }, [isOpen]);
 
   const togglePart = (id: string) => setOpenParts(prev => ({ ...prev, [id]: !prev[id] }));
   const toggleModule = (id: string) => setOpenModules(prev => ({ ...prev, [id]: !prev[id] }));
+
+  const handleClearErrors = () => {
+    if(confirm("Voulez-vous vraiment effacer toutes les questions ratées ?")) {
+      clearWrongQuestions();
+      setWrongCount(0);
+    }
+  }
 
   return (
     <AnimatePresence>
@@ -44,7 +51,6 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLesso
           <motion.aside
             initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 220 }}
-            /* Ajout de overscroll-contain pour bloquer le scroll élastique */
             className="fixed top-0 left-0 h-[100dvh] w-[85%] md:w-1/3 bg-slate-900/95 backdrop-blur-xl border-r border-slate-700 z-50 p-4 overflow-y-auto overscroll-contain flex flex-col"
           >
             <div className="flex justify-between items-center mb-6 shrink-0">
@@ -54,13 +60,25 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLesso
               <button onClick={onClose} className="text-slate-400 hover:text-white text-xl w-8 h-8 rounded-full hover:bg-slate-800">✕</button>
             </div>
 
+            {/* BOUTON DE REVISION */}
+            {wrongCount > 0 && (
+              <div className="mb-4 bg-slate-800/60 p-3 rounded-lg border border-red-500/30">
+                <p className="text-sm text-slate-300 mb-2">Tu as {wrongCount} question(s) ratée(s).</p>
+                <div className="flex gap-2">
+                  <button onClick={onStartRevision} className="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white text-xs py-2 rounded font-bold">
+                    🔄 Réviser
+                  </button>
+                  <button onClick={handleClearErrors} className="bg-slate-700 hover:bg-slate-600 text-white text-xs py-2 px-3 rounded">
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div className="flex-1">
               {parts.map(part => (
                 <div key={part.id} className="mb-4">
-                  <button
-                    onClick={() => togglePart(part.id)}
-                    className="w-full flex justify-between items-center px-3 py-2 rounded-lg bg-slate-800/60 text-left text-sm font-semibold text-cyan-300 hover:bg-slate-800 mb-2"
-                  >
+                  <button onClick={() => togglePart(part.id)} className="w-full flex justify-between items-center px-3 py-2 rounded-lg bg-slate-800/60 text-left text-sm font-semibold text-cyan-300 hover:bg-slate-800 mb-2">
                     <span>📘 {part.title}</span>
                     <motion.span animate={{ rotate: openParts[part.id] ? 0 : -90 }}>▾</motion.span>
                   </button>
@@ -70,10 +88,7 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLesso
                       <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden ml-2 space-y-1">
                         {part.modules.map(mod => (
                           <div key={mod.id} className="mb-2">
-                            <button
-                              onClick={() => toggleModule(mod.id)}
-                              className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-slate-800/80"
-                            >
+                            <button onClick={() => toggleModule(mod.id)} className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-slate-800/80">
                               <span className="flex items-center gap-2">
                                 <img src={mod.logo} alt={mod.name} className="w-4 h-4 object-contain" />
                                 {mod.name}
@@ -92,10 +107,7 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLesso
                                       <li key={lesson.id} className="relative">
                                         <button
                                           onClick={() => {
-                                            if (!isUnlocked) {
-                                              alert("🔒 Termine d'abord la leçon précédente !");
-                                              return;
-                                            }
+                                            if (!isUnlocked) { alert("🔒 Termine d'abord la leçon précédente !"); return; }
                                             onSelectLesson(lesson);
                                           }}
                                           onMouseEnter={() => setHoveredLesson(lesson.id)}
@@ -113,10 +125,7 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLesso
                                         </button>
                                         
                                         {hoveredLesson === lesson.id && isUnlocked && !isCompleted && (
-                                          <motion.div 
-                                            initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                                            className="absolute left-full top-0 ml-2 w-48 p-2 bg-slate-800 text-xs text-slate-200 rounded shadow-lg z-50 border border-slate-600 pointer-events-none hidden md:block"
-                                          >
+                                          <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="absolute left-full top-0 ml-2 w-48 p-2 bg-slate-800 text-xs text-slate-200 rounded shadow-lg z-50 border border-slate-600 pointer-events-none hidden md:block">
                                             {lesson.description}
                                           </motion.div>
                                         )}
@@ -135,12 +144,8 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLesso
               ))}
             </div>
 
-            {/* SECTION À PROPOS */}
             <div className="mt-8 pt-4 border-t border-slate-800 shrink-0">
-              <button
-                onClick={() => setAProposOuvert(!aProposOuvert)}
-                className="w-full flex justify-between items-center px-3 py-2 rounded-lg bg-slate-800/60 text-left text-sm font-semibold text-cyan-300 hover:bg-slate-800 mb-2"
-              >
+              <button onClick={() => setAProposOuvert(!aProposOuvert)} className="w-full flex justify-between items-center px-3 py-2 rounded-lg bg-slate-800/60 text-left text-sm font-semibold text-cyan-300 hover:bg-slate-800 mb-2">
                 <span>ℹ️ À propos</span>
                 <motion.span animate={{ rotate: aProposOuvert ? 0 : -90 }}>▾</motion.span>
               </button>
@@ -151,13 +156,9 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLesso
                       <p className="text-slate-300 font-medium">🚀 Pourquoi DevOps Quiz ?</p>
                       <p>Né d'un constat simple : apprendre le DevOps peut être intimidant. Ce jeu rend l'apprentissage accessible et sans pression.</p>
                       <p>💡 Projet développé depuis Termux sur Android.</p>
-                      
                       <div className="pt-2 border-t border-slate-700/50">
                         <p className="mb-2">Une remarque ? Un bug ? Une idée ?</p>
-                        <a 
-                          href="mailto:fotsingndiguedevy@gmail.com?subject=Feedback%20DevOps%20Quiz" 
-                          className="inline-block bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded transition-colors text-center w-full"
-                        >
+                        <a href="mailto:fotsingndiguedevy@gmail.com?subject=Feedback%20DevOps%20Quiz" className="inline-block bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded transition-colors text-center w-full">
                           💬 Envoyer un feedback
                         </a>
                       </div>

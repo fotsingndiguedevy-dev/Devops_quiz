@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Lesson, LessonQuestion } from "@/data/parts";
 import { shuffle } from "@/utils/shuffle";
 import { getMessageCorrect, getMessageFaux } from "@/data/encouragements";
+import { saveWrongQuestion, removeWrongQuestion } from "@/utils/storage";
 
 type QuizProps = {
   lesson: Lesson;
@@ -42,8 +43,12 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
 
     if (!correct) {
       setHearts((h) => h - 1);
+      saveWrongQuestion(current.id); // <-- SAUVEGARDE DE L'ERREUR ICI
       const retryQ = { ...current, options: shuffle(current.options) };
       setWrongQuestions((prev) => [...prev, retryQ]);
+    } else {
+      // Si c'est correct, on le retire des erreurs (utile en mode révision)
+      removeWrongQuestion(current.id);
     }
   }
 
@@ -91,7 +96,6 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-8">
-      {/* On ajoute overflow-hidden et w-full pour bloquer le débordement global */}
       <div className="max-w-2xl w-full overflow-hidden">
         <div className="flex items-center gap-4 mb-6">
           <button onClick={() => onFinish("menu")} className="text-slate-400 hover:text-white text-xl">🏠</button>
@@ -119,7 +123,6 @@ export default function Quiz({ lesson, moduleLogo, onFinish }: QuizProps) {
                 <p className="text-white text-lg italic">« {current.definition} »</p>
               </div>
             )}
-            {/* Ajout de break-words pour forcer le retour à la ligne */}
             {current.question && <h2 className="text-xl font-bold text-white mb-4 break-words">{current.question}</h2>}
             {current.codeSnippet && (
               <pre className="bg-slate-950 border border-red-500/50 text-red-300 p-3 rounded-lg text-sm mb-4 overflow-x-auto whitespace-pre-wrap break-words">

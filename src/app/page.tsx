@@ -6,8 +6,8 @@ import LessonView from "@/components/LessonView";
 import Quiz from "@/components/Quiz";
 import LessonSummary from "@/components/LessonSummary";
 import FloatingMenu from "@/components/FloatingMenu";
-import { Lesson, parts } from "@/data/parts";
-import { getCompletedLessons, saveCompletedLesson } from "@/utils/storage";
+import { Lesson, parts, getQuestionById } from "@/data/parts";
+import { getCompletedLessons, saveCompletedLesson, getWrongQuestions } from "@/utils/storage";
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -17,13 +17,13 @@ export default function Home() {
   
   const [quizStarted, setQuizStarted] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
+  const [isRevisionMode, setIsRevisionMode] = useState(false);
 
   useEffect(() => {
     setCompletedLessons(getCompletedLessons());
   }, []);
 
   function handleSelectLesson(lesson: Lesson) {
-    // Trouver le logo du module
     for (const part of parts) {
       for (const mod of part.modules) {
         if (mod.lessons.find(l => l.id === lesson.id)) {
@@ -34,14 +34,41 @@ export default function Home() {
     }
     setSelectedLesson(lesson);
     setSidebarOpen(false);
+    setIsRevisionMode(false);
     
-    // ⚠️ LA CORRECTION EST ICI : Si la leçon est déjà validée, on affiche le résumé directement
     if (completedLessons.includes(lesson.id)) {
       setQuizFinished(true);
       setQuizStarted(false);
     } else {
       setQuizFinished(false);
       setQuizStarted(false);
+    }
+  }
+
+  function handleStartRevision() {
+    const wrongIds = getWrongQuestions();
+    if (wrongIds.length === 0) return;
+
+    // On construit une fausse leçon avec les questions ratées
+    const revisionQuestions = wrongIds
+      .map(id => getQuestionById(id))
+      .filter(item => item !== undefined)
+      .map(item => item!.question);
+
+    if (revisionQuestions.length > 0) {
+      const revisionLesson: Lesson = {
+        id: "revision",
+        title: "Mode Révision",
+        description: "Révise tes erreurs",
+        questions: revisionQuestions
+      };
+      
+      setSelectedLesson(revisionLesson);
+      setSelectedModuleLogo("https://cdn.simpleicons.org/git/white"); // Un logo par défaut
+      setIsRevisionMode(true);
+      setSidebarOpen(false);
+      setQuizStarted(true);
+      setQuizFinished(false);
     }
   }
 
@@ -52,27 +79,28 @@ export default function Home() {
       setQuizFinished(false);
       setQuizStarted(false);
       setSelectedLesson(null);
+      setIsRevisionMode(false);
     } 
     else if (nextAction === "replay") {
       setQuizFinished(false);
       setQuizStarted(true);
     } 
     else if (nextAction === "success") {
-      // L'utilisateur a fini le quiz avec succès !
-      saveCompletedLesson(selectedLesson.id);
-      setCompletedLessons(getCompletedLessons());
+      if (!isRevisionMode) {
+        saveCompletedLesson(selectedLesson.id);
+        setCompletedLessons(getCompletedLessons());
+      }
       setQuizStarted(false);
-      setQuizFinished(true); // Affiche le LessonSummary
+      setQuizFinished(true);
     } 
     else if (nextAction === "next") {
-      // Passer à la leçon suivante depuis le LessonSummary
       const allLessons = parts.flatMap(p => p.modules.flatMap(m => m.lessons));
       const currentIndex = allLessons.findIndex(l => l.id === selectedLesson.id);
       
       if (currentIndex !== -1 && currentIndex < allLessons.length - 1) {
         handleSelectLesson(allLessons[currentIndex + 1]);
       } else {
-        handleFinishQuiz("menu"); // Si c'était la dernière leçon
+        handleFinishQuiz("menu");
       }
     }
   }
@@ -85,6 +113,7 @@ export default function Home() {
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         onSelectLesson={handleSelectLesson}
+        onStartRevision={handleStartRevision}
         selectedLessonId={selectedLesson?.id}
         completedLessons={completedLessons}
       />

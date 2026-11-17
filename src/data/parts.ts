@@ -138,3 +138,16 @@ export function getLessonById(lessonId: string): Lesson | undefined {
   }
   return undefined;
 }
+
+// Nouvelle fonction pour trouver une question par son ID (utile pour la révision)
+export function getQuestionById(questionId: string): { question: LessonQuestion, moduleId: string, lessonId: string } | undefined {
+  for (const part of parts) {
+    for (const module of part.modules) {
+      for (const lesson of module.lessons) {
+        const q = lesson.questions.find(q => q.id === questionId);
+        if (q) return { question: q, moduleId: module.id, lessonId: lesson.id };
+      }
+    }
+  }
+  return undefined;
+}
