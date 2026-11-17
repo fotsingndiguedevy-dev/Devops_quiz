@@ -1,6 +1,6 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { parts, Lesson } from "@/data/parts";
 import { isLessonUnlocked } from "@/utils/storage";
 
@@ -18,6 +18,18 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLesso
   const [hoveredLesson, setHoveredLesson] = useState<string | null>(null);
   const [aProposOuvert, setAProposOuvert] = useState(false);
 
+  // Bloque le scroll de la page principale quand la sidebar est ouverte
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
   const togglePart = (id: string) => setOpenParts(prev => ({ ...prev, [id]: !prev[id] }));
   const toggleModule = (id: string) => setOpenModules(prev => ({ ...prev, [id]: !prev[id] }));
 
@@ -32,9 +44,10 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLesso
           <motion.aside
             initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 220 }}
-            className="fixed top-0 left-0 h-screen w-[85%] md:w-1/3 bg-slate-900/95 backdrop-blur-xl border-r border-slate-700 z-50 p-4 overflow-y-auto flex flex-col"
+            /* Ajout de overscroll-contain pour bloquer le scroll élastique */
+            className="fixed top-0 left-0 h-[100dvh] w-[85%] md:w-1/3 bg-slate-900/95 backdrop-blur-xl border-r border-slate-700 z-50 p-4 overflow-y-auto overscroll-contain flex flex-col"
           >
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-6 shrink-0">
               <h1 className="text-lg font-bold bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">
                 DevOps Quiz
               </h1>
@@ -122,8 +135,8 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, selectedLesso
               ))}
             </div>
 
-            {/* SECTION À PROPOS MODIFIÉE (FEEDBACK AU LIEU DE PORTFOLIO) */}
-            <div className="mt-8 pt-4 border-t border-slate-800">
+            {/* SECTION À PROPOS */}
+            <div className="mt-8 pt-4 border-t border-slate-800 shrink-0">
               <button
                 onClick={() => setAProposOuvert(!aProposOuvert)}
                 className="w-full flex justify-between items-center px-3 py-2 rounded-lg bg-slate-800/60 text-left text-sm font-semibold text-cyan-300 hover:bg-slate-800 mb-2"
