@@ -17,6 +17,8 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             set -e
+            # Charger NVM pour avoir la bonne version de Node.js
+            source ~/.nvm/nvm.sh
             cd ~/Devops_quiz
             git fetch origin main
             git reset --hard origin/main
