@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "DevOps Quiz",
@@ -10,9 +11,7 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "DevOps Quiz",
   },
-  formatDetection: {
-    telephone: false,
-  },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {
@@ -23,15 +22,13 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr">
-      <body className="overflow-x-hidden bg-slate-900 text-white">
-        {children}
+    <html lang="fr" suppressHydrationWarning>
+      <body className="overflow-x-hidden bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
