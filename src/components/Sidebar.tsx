@@ -17,7 +17,6 @@ type SidebarProps = {
 export default function Sidebar({ isOpen, onClose, onSelectLesson, onStartRevision, selectedLessonId, completedLessons }: SidebarProps) {
   const [openParts, setOpenParts] = useState<Record<string, boolean>>({});
   const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
-  const [hoveredLesson, setHoveredLesson] = useState<string | null>(null);
   const [aProposOuvert, setAProposOuvert] = useState(false);
   const [wrongList, setWrongList] = useState<string[]>([]);
 
@@ -49,9 +48,7 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, onStartRevisi
           <motion.aside initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }} transition={{ type: "spring", damping: 28, stiffness: 220 }} className="fixed top-0 left-0 h-[100dvh] w-[85%] md:w-1/3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-r border-slate-200 dark:border-slate-700 z-50 p-4 overflow-y-auto overscroll-contain flex flex-col shadow-2xl dark:shadow-none">
             
             <div className="flex justify-between items-center mb-6 shrink-0">
-              <h1 className="text-lg font-bold bg-gradient-to-r from-cyan-500 to-green-500 dark:from-cyan-400 dark:to-green-400 bg-clip-text text-transparent">
-                DevOps Quiz
-              </h1>
+              <h1 className="text-lg font-bold bg-gradient-to-r from-cyan-500 to-green-500 dark:from-cyan-400 dark:to-green-400 bg-clip-text text-transparent">DevOps Quiz</h1>
               <div className="flex items-center gap-2">
                 <ThemeToggle />
                 <button onClick={onClose} className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xl w-8 h-8 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800">✕</button>
@@ -61,7 +58,7 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, onStartRevisi
             {wrongList.length > 0 && (
               <div className="mb-4 bg-red-50 dark:bg-slate-800/60 p-3 rounded-lg border border-red-200 dark:border-red-500/30">
                 <p className="text-sm text-slate-700 dark:text-slate-300 mb-2 font-bold">Mode Révision</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Questions ratées en mémoire : <span className="text-red-500 font-bold">{wrongList.length}</span></p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Questions ratées : <span className="text-red-500 font-bold">{wrongList.length}</span></p>
                 <div className="flex gap-2">
                   <button onClick={onStartRevision} className="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white text-xs py-2 rounded font-bold">🔄 Réviser</button>
                   <button onClick={handleClearErrors} className="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-white text-xs py-2 px-3 rounded">🗑️</button>
@@ -83,10 +80,7 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, onStartRevisi
                         {part.modules.map(mod => (
                           <div key={mod.id} className="mb-2">
                             <button onClick={() => toggleModule(mod.id)} className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80">
-                              <span className="flex items-center gap-2">
-                                <img src={mod.logo} alt={mod.name} className="w-4 h-4 object-contain" />
-                                {mod.name}
-                              </span>
+                              <span className="flex items-center gap-2"><img src={mod.logo} alt={mod.name} className="w-4 h-4 object-contain" />{mod.name}</span>
                               <motion.span animate={{ rotate: openModules[mod.id] ? 0 : -90 }}>▾</motion.span>
                             </button>
 
@@ -99,7 +93,7 @@ export default function Sidebar({ isOpen, onClose, onSelectLesson, onStartRevisi
                                     
                                     return (
                                       <li key={lesson.id} className="relative">
-                                        <button onClick={() => { if (!isUnlocked) { alert("🔒 Termine d'abord la leçon précédente !"); return; } onSelectLesson(lesson); }} onMouseEnter={() => setHoveredLesson(lesson.id)} onMouseLeave={() => setHoveredLesson(null)} className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-all flex justify-between items-center ${ selectedLessonId === lesson.id ? "bg-gradient-to-r from-cyan-100 to-green-100 dark:from-cyan-500/30 dark:to-green-500/30 text-cyan-800 dark:text-white border-l-2 border-cyan-400" : isUnlocked ? "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200 cursor-pointer" : "text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-60" }`}>
+                                        <button onClick={() => { if (!isUnlocked) { alert("🔒 Termine d'abord la leçon précédente !"); return; } onSelectLesson(lesson); }} className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-all flex justify-between items-center ${ selectedLessonId === lesson.id ? "bg-gradient-to-r from-cyan-100 to-green-100 dark:from-cyan-500/30 dark:to-green-500/30 text-cyan-800 dark:text-white border-l-2 border-cyan-400" : isUnlocked ? "text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200 cursor-pointer" : "text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-60" }`}>
                                           <span>{lesson.title}</span>
                                           <span>{isCompleted ? "✅" : isUnlocked ? "▶️" : "🔒"}</span>
                                         </button>

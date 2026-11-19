@@ -3,15 +3,12 @@ import { parts, Lesson } from "@/data/parts";
 const STORAGE_KEY = "devops-quiz-progress";
 const WRONG_QUESTIONS_KEY = "devops-quiz-wrong-questions";
 
-// --- LECONS COMPLETEES ---
 export function getCompletedLessons(): string[] {
   if (typeof window === "undefined") return [];
   try {
     const data = localStorage.getItem(STORAGE_KEY);
     return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
+  } catch { return []; }
 }
 
 export function saveCompletedLesson(lessonId: string) {
@@ -27,9 +24,7 @@ export function getAllLessonsFlat(): Lesson[] {
   const all: Lesson[] = [];
   for (const part of parts) {
     for (const mod of part.modules) {
-      for (const lesson of mod.lessons) {
-        all.push(lesson);
-      }
+      for (const lesson of mod.lessons) { all.push(lesson); }
     }
   }
   return all;
@@ -44,15 +39,12 @@ export function isLessonUnlocked(lessonId: string, completedLessons: string[]): 
   return completedLessons.includes(previousLesson.id);
 }
 
-// --- QUESTIONS RATEES ---
 export function getWrongQuestions(): string[] {
   if (typeof window === "undefined") return [];
   try {
     const data = localStorage.getItem(WRONG_QUESTIONS_KEY);
     return data ? JSON.parse(data) : [];
-  } catch {
-    return [];
-  }
+  } catch { return []; }
 }
 
 export function saveWrongQuestion(questionId: string) {
